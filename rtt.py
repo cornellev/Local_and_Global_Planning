@@ -24,7 +24,7 @@ def check_node(coord):
 
 
 def sample_node(root_node):
-    search_radius = 80
+    search_radius = 20
 
     min_x = max(0, root_node[0] - search_radius)
     max_x = min(len(grid) - 1, root_node[0] + search_radius)
@@ -71,6 +71,7 @@ def rtt(num_iters, start, end):
 
     gamma = .9
     gamma_init = gamma
+    found_end = False
 
     nodes = []
     weights = []
@@ -81,12 +82,13 @@ def rtt(num_iters, start, end):
 
     for i in range(num_iters):
         print(i)
-        # nodes.sort(key=lambda x: distance(x, end), reverse=True)
-        # root_node = random.choice(nodes[-1 * min(len(nodes) - 1, 100):])
+        nodes.sort(key=lambda x: distance(x, start))
+
         if random.random() > gamma:
             root_node = random.choices(nodes, weights=weights, k=1)[0]
         else:
-            root_node = random.choice(nodes)
+            # root_node = random.choice(nodes)
+            root_node = random.choice(nodes[-1 * min(len(nodes) - 1, 100):])
 
         # gamma -= gamma_init / num_iters
 
@@ -101,9 +103,10 @@ def rtt(num_iters, start, end):
             i += 1
 
         if (i%10 == 0):
-            if (find_nearest_node(end, nodes)) is not None:
+            if not found_end and (find_nearest_node(end, nodes)) is not None:
                 print("MEO")
                 gamma = .3
+                found_end = True
 
             grid_to_image(grid, edges, 'test.png')
             imp = pygame.image.load('./test.png').convert()
