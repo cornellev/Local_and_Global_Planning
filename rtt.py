@@ -199,25 +199,56 @@ def spawn_start(nodes_list, start, dist):
     return valid_nodes
 
 
-def spawn(nodes_list, root_node, prev_node, angle, dist):
+def spawn(nodes_list, root_node, prev_node, angle, min_dist):
+    valid = []
+
     angle_to_root = math.atan2(root_node[1] - prev_node[1], root_node[0] - prev_node[0])
     angle_a = angle_to_root + angle
     angle_b = angle_to_root - angle
 
-    magn = dist
-    vec_a = (math.cos(angle_a) * magn, math.sin(angle_a) * magn)
-    vec_b = (math.cos(angle_b) * magn, math.sin(angle_b) * magn)
+    magn = min_dist
 
-    node_a = (round(root_node[0] + vec_a[0]), round(root_node[1] + vec_a[1]))
-    node_b = (round(root_node[0] + vec_b[0]), round(root_node[1] + vec_b[1]))
+    vec_a = (math.cos(angle_a), math.sin(angle_a))
+    a = (vec_a[0] * magn, vec_a[1] * magn)
+    node_a = (round(root_node[0] + a[0]), round(root_node[1] + a[1]))
 
-    valid = []
+    while (not node_a[0] > len(grid) - 1
+            and not node_a[1] > len(grid[0]) - 1
+            and not node_a[0] < 0
+            and not node_a[1] < 0
+            and not check_collision(node_a)
+            and not line_cross_check(grid, root_node, node_a)
+    ):
+        magn += 1
+        a = (vec_a[0] * magn, vec_a[1] * magn)
+        node_a = (round(root_node[0] + a[0]), round(root_node[1] + a[1]))
 
-    for node in [node_a, node_b]:
-        if not check_collision(node) and \
-                not node in nodes_list and \
-                not line_cross_check(grid, root_node, node):
-            valid.append(node)
+    if magn != min_dist:
+        valid.append((round(vec_a[0] * (magn - 1)/2) + root_node[0], round(vec_a[1] * (magn -
+                                                                                       1)/2) +
+                      root_node[1]))
+
+
+    magn = min_dist
+    vec_b = (math.cos(angle_b), math.sin(angle_b))
+    b = (vec_b[0] * magn, vec_b[1] * magn)
+    node_b = (round(root_node[0] + b[0]), round(root_node[1] + b[1]))
+
+    while (not node_b[0] > len(grid) - 1
+           and not node_b[1] > len(grid[0]) - 1
+           and not node_b[0] < 0
+           and not node_b[1] < 0
+           and not check_collision(node_b)
+           and not line_cross_check(grid, root_node, node_b)
+    ):
+        magn += 1
+        b = (vec_b[0] * magn, vec_b[1] * magn)
+        node_b = (round(root_node[0] + b[0]), round(root_node[1] + b[1]))
+
+    if magn != min_dist:
+        valid.append((round(vec_b[0] * (magn - 1)/2) + root_node[0], round(vec_b[1] * (magn -
+                                                                                       1)/2) +
+                      root_node[1]))
 
     return valid
 
@@ -228,7 +259,6 @@ def spawn(nodes_list, root_node, prev_node, angle, dist):
 # Backtrace shortest path from the end node
 
 def treeSearch(num_iters, start, end, angle, dist):
-    print(grid)
     grid[start[0]][start[1]] = 3
     grid[end[0]][end[1]] = 4
 
@@ -238,7 +268,6 @@ def treeSearch(num_iters, start, end, angle, dist):
     min_distance = {start: 0}
 
     valid_nodes = spawn_start(edges.keys(), start, dist)
-    print(valid_nodes)
 
     for node in valid_nodes:
         not_propagated.append(node)
@@ -272,10 +301,11 @@ def treeSearch(num_iters, start, end, angle, dist):
 
             if (i % 50 == 0):
                 print(i)
-                grid_to_image(grid, edges_as_list, 'test.png')
-                imp = pygame.image.load('./test.png').convert()
-                scrn.blit(imp, (0, 0))
-                pygame.display.flip()
+                # grid_to_image(grid, edges_as_list, 'test.png')
+                # imp = pygame.image.load('./test.png').convert()
+                # scrn.blit(imp, (0, 0))
+                # pygame.display.flip()
+                # time.sleep(1)
 
         i += 1
 
@@ -321,5 +351,5 @@ def treeSearch(num_iters, start, end, angle, dist):
 
 # nodes = newRTT(400, (10, 10), (300, 300))
 # nodes = rtt(400, (10, 10), (300, 300))
-edges = treeSearch(4000, (1, 1), (320, 320), math.radians(45), 25)
+edges = treeSearch(1000, (1, 1), (320, 320), math.radians(45), 25)
 # print(astar(nodes, (10, 10), (300, 300), distance))
