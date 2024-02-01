@@ -58,3 +58,38 @@ def grid_to_image(grid, coordinate_pairs, output_path):
     new_img.save(output_path)
 
     new_img.save(output_path)
+
+def render_path(grid, edges, coordinate_pairs, output_path):
+    height = len(grid)
+    width = len(grid[0])
+
+    new_img = Image.new("RGBA", (width, height), (0, 0, 0, 0))
+    draw = ImageDraw.Draw(new_img)
+    start = (0, 0)
+    end = (0, 0)
+
+    for y in range(height):
+        for x in range(width):
+            new_img.putpixel((x, y), color_mapping.get(grid[y][x], black))
+            if grid[y][x] == 3:
+                start = (x, y)
+            if grid[y][x] == 4:
+                end = (x, y)
+
+    for startq, endq in coordinate_pairs:
+        draw.line([startq, endq], fill=purple, width=2)  # Change fill and width as needed
+
+    current = end
+    while current != start:
+        draw.line([current, edges[current]], fill=red, width=2)
+        current = edges[current]
+
+
+    box = (start[0] - 3, start[1] - 3, start[0] + 3, start[1] + 3)
+    draw.ellipse(box, outline="red", width=3)
+    box = (end[0] - 3, end[1] - 3, end[0] + 3, end[1] + 3)
+    draw.ellipse(box, outline="green", width=5)
+
+    new_img.save(output_path)
+
+    new_img.save(output_path)

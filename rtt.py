@@ -6,7 +6,7 @@ import pygame
 from line_cross import line_cross_check
 from a_star import astar
 
-from render import image_to_grid, grid_to_image
+from render import image_to_grid, grid_to_image, render_path
 
 grid = image_to_grid('./maps/example_map_binary.png')
 
@@ -257,11 +257,11 @@ def treeSearch(num_iters, start, end, angle, dist):
             edges[node] = root_node
             edges_as_list.append((root_node, node))
 
-            grid_to_image(grid, edges_as_list, 'test.png')
-            imp = pygame.image.load('./test.png').convert()
-            scrn.blit(imp, (0, 0))
-            pygame.display.flip()
-            time.sleep(.5)
+            # grid_to_image(grid, edges_as_list, 'test.png')
+            # imp = pygame.image.load('./test.png').convert()
+            # scrn.blit(imp, (0, 0))
+            # pygame.display.flip()
+            # time.sleep(.5)
 
         i += 1
 
@@ -273,12 +273,23 @@ def treeSearch(num_iters, start, end, angle, dist):
     else:
         print("CRITICAL ERROR")
 
-    grid_to_image(grid, edges_as_list, 'test.png')
+    current_end = end
+    current_start = start
+    while current_end != current_start:
+        if not line_cross_check(grid, current_end, current_start):
+            edges[current_end] = current_start
+            current_start = current_end
+            current_end = end
+        else:
+            current_end = edges[current_end]
+
+
+    render_path(grid, edges, edges_as_list, 'test.png')
 
     return nodes, edges
 
 
 # nodes = newRTT(400, (10, 10), (300, 300))
 # nodes = rtt(400, (10, 10), (300, 300))
-nodes, edges = treeSearch(400, (10, 10), (300, 300), math.radians(25), 50)
+nodes, edges = treeSearch(10000, (10, 10), (300, 300), math.radians(25), 25)
 # print(astar(nodes, (10, 10), (300, 300), distance))
