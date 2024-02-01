@@ -8,7 +8,7 @@ from a_star import astar
 
 from render import image_to_grid, grid_to_image, render_path
 
-grid = image_to_grid('./maps/example_map_binary.png')
+grid = image_to_grid('./maps/img.png')
 
 pygame.init()
 scrn = pygame.display.set_mode((len(grid), len(grid[0])))
@@ -20,8 +20,7 @@ scrn = pygame.display.set_mode((len(grid), len(grid[0])))
 
 
 def check_collision(coord):
-
-    return coord[0] > len(grid) - 1 or coord[1] > len(grid[1]) - 1 or  grid[coord[0]][coord[1]] == 1
+    return coord[0] > len(grid) - 1 or coord[1] > len(grid[1]) - 1 or grid[coord[0]][coord[1]] == 1
 
 
 def check_node(coord):
@@ -66,7 +65,7 @@ def find_nearest_node(node, nodes):
 
 
 def distance(node_a, node_b):
-    return (node_a[0] - node_b[0]) ** 2 + (node_a[1] - node_b[1]) ** 2
+    return ((node_a[0] - node_b[0]) ** 2 + (node_a[1] - node_b[1]) ** 2) ** .5
 
 
 def rtt(num_iters, start, end):
@@ -205,8 +204,10 @@ def spawn(nodes_list, root_node, prev_node, angle, dist):
     angle_a = angle_to_root + angle
     angle_b = angle_to_root - angle
 
-    vec_a = (math.cos(angle_a) * dist, math.sin(angle_a) * dist)
-    vec_b = (math.cos(angle_b) * dist, math.sin(angle_b) * dist)
+    magn = dist
+    vec_a = (math.cos(angle_a) * magn, math.sin(angle_a) * magn)
+    vec_b = (math.cos(angle_b) * magn, math.sin(angle_b) * magn)
+
     node_a = (round(root_node[0] + vec_a[0]), round(root_node[1] + vec_a[1]))
     node_b = (round(root_node[0] + vec_b[0]), round(root_node[1] + vec_b[1]))
 
@@ -221,75 +222,104 @@ def spawn(nodes_list, root_node, prev_node, angle, dist):
     return valid
 
 
-
-
-
 # Tree search
 # From each recently added node, attempt to spawn 2 outgoing trees at set angle and set length
 # Connect new node to nearest node (only check nearby area, don't need to check entire map)
 # Backtrace shortest path from the end node
 
 def treeSearch(num_iters, start, end, angle, dist):
+    print(grid)
     grid[start[0]][start[1]] = 3
     grid[end[0]][end[1]] = 4
 
-    nodes = [start]
-    edges = {}
+    edges = {start: start}
     edges_as_list = []
     not_propagated = []
+    min_distance = {start: 0}
 
-    valid_nodes = spawn_start(nodes, start, dist)
+    valid_nodes = spawn_start(edges.keys(), start, dist)
+    print(valid_nodes)
+
     for node in valid_nodes:
-        nodes.append(node)
         not_propagated.append(node)
         edges[node] = start
         edges_as_list.append((start, node))
+        min_distance[node] = distance(node, start)
 
     i = 0
 
     while len(not_propagated) > 0 and i < num_iters:
+
         root_node = not_propagated.pop(0)
 
-        valid_nodes = spawn(nodes, root_node, edges[root_node], angle, dist)
-        for node in valid_nodes:
-            nodes.append(node)
-            not_propagated.append(node)
-            edges[node] = root_node
-            edges_as_list.append((root_node, node))
+        valid_nodes = spawn(list(edges.keys()), root_node, edges[root_node], angle, dist)
 
-            # grid_to_image(grid, edges_as_list, 'test.png')
-            # imp = pygame.image.load('./test.png').convert()
-            # scrn.blit(imp, (0, 0))
-            # pygame.display.flip()
-            # time.sleep(.5)
+        for node in valid_nodes:
+            best = None
+            best_dist = float('inf')
+
+            for root in edges:
+                sub_dist = distance(root, node) + min_distance[root]
+                if sub_dist < best_dist \
+                        and not line_cross_check(grid, root, node):
+                    best = root
+                    best_dist = sub_dist
+
+            not_propagated.append(node)
+            edges[node] = best
+            min_distance[node] = best_dist
+            edges_as_list.append((best, node))
+
+            if (i % 50 == 0):
+                print(i)
+                grid_to_image(grid, edges_as_list, 'test.png')
+                imp = pygame.image.load('./test.png').convert()
+                scrn.blit(imp, (0, 0))
+                pygame.display.flip()
 
         i += 1
 
-    nearest_node = find_nearest_node(end, nodes)
-    if nearest_node is not None:
-        nodes.append(end)
-        edges[end] = nearest_node
-        edges_as_list.append((nearest_node, end))
-    else:
+    # nearest_node = find_nearest_node(end, nodes)
+    # if nearest_node is not None:
+    #     edges[end] = nearest_node
+    #     edges_as_list.append((nearest_node, end))
+    # else:
+    #     print("CRITICAL ERROR")
+
+    best = None
+    best_dist = float('inf')
+
+    for root in edges:
+        sub_dist = distance(root, end) + min_distance[root]
+        if sub_dist < best_dist \
+                and not line_cross_check(grid, root, end):
+            best = root
+            best_dist = sub_dist
+
+    if best is None:
         print("CRITICAL ERROR")
+    else:
+        edges[end] = best
+        edges_as_list.append((best, end))
 
-    current_end = end
-    current_start = start
-    while current_end != current_start:
-        if not line_cross_check(grid, current_end, current_start):
-            edges[current_end] = current_start
-            current_start = current_end
-            current_end = end
-        else:
-            current_end = edges[current_end]
+    print(edges)
 
+    # current_end = end
+    # current_start = start
+    # while current_end != current_start:
+    #     if not line_cross_check(grid, current_end, current_start):
+    #         edges[current_end] = current_start
+    #         current_start = current_end
+    #         current_end = end
+    #     else:
+    #         current_end = edges[current_end]
 
     render_path(grid, edges, edges_as_list, 'test.png')
 
-    return nodes, edges
+    return edges
 
 
 # nodes = newRTT(400, (10, 10), (300, 300))
 # nodes = rtt(400, (10, 10), (300, 300))
-nodes, edges = treeSearch(10000, (10, 10), (300, 300), math.radians(25), 25)
+edges = treeSearch(4000, (1, 1), (320, 320), math.radians(45), 25)
 # print(astar(nodes, (10, 10), (300, 300), distance))

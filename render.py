@@ -25,7 +25,10 @@ def image_to_grid(path):
     pixels = [pixels[i * width:(i + 1) * width] for i in range(height)]
     for pixel_row in pixels:
         for pixel in range(len(pixel_row)):
-            pixel_row[pixel] = 0 if pixel_row[pixel] == black else 1
+            if all([x > 150 for x in pixel_row[pixel]]):
+                pixel_row[pixel] = 1
+            else:
+                pixel_row[pixel] = 0
 
     return pixels
 
