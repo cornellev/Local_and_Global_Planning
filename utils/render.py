@@ -19,7 +19,7 @@ color_mapping = {
 }
 
 
-def image_to_grid(path):
+def image_to_grid(path, reverse_colors=False):
     img = Image.open(path)
 
     pixels = list(img.getdata())
@@ -28,9 +28,9 @@ def image_to_grid(path):
     for pixel_row in pixels:
         for pixel in range(len(pixel_row)):
             if all([x > 150 for x in pixel_row[pixel]]):
-                pixel_row[pixel] = 1
+                pixel_row[pixel] = 1 if not reverse_colors else 0
             else:
-                pixel_row[pixel] = 0
+                pixel_row[pixel] = 0 if not reverse_colors else 1
 
     return pixels
 
@@ -91,7 +91,7 @@ def render_path(grid, edges, coordinate_pairs, output_path):
 
     current = end
     while current != start:
-        draw.line([current, edges[current]], fill=red, width=2)
+        draw.line([current, edges[current]], fill=(255, 0, 0, 255), width=2)
         current = edges[current]
         waypoints.append(list(current))
 
