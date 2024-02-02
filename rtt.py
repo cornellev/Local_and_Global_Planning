@@ -8,7 +8,7 @@ from a_star import astar
 
 from render import image_to_grid, grid_to_image, render_path
 
-grid = image_to_grid('./maps/img.png')
+grid = image_to_grid('./maps/img_3.png')
 
 pygame.init()
 scrn = pygame.display.set_mode((len(grid), len(grid[0])))
@@ -318,10 +318,10 @@ def treeSearch(num_iters, start, end, angle, dist):
 
         if (i % 50 == 0):
             print(i)
-            grid_to_image(grid, edges_as_list, 'test.png')
-            imp = pygame.image.load('./test.png').convert()
-            scrn.blit(imp, (0, 0))
-            pygame.display.flip()
+            # grid_to_image(grid, edges_as_list, 'test.png')
+            # imp = pygame.image.load('./test.png').convert()
+            # scrn.blit(imp, (0, 0))
+            # pygame.display.flip()
 
         i += 1
 
@@ -360,5 +360,5 @@ def treeSearch(num_iters, start, end, angle, dist):
 
 # nodes = newRTT(400, (10, 10), (300, 300))
 # nodes = rtt(400, (10, 10), (300, 300))
-edges = treeSearch(1000, (1, 1), (320, 320), math.radians(45), 25)
+edges = treeSearch(3000, (590, 590), (5, 5), math.radians(45), 25)
 # print(astar(nodes, (10, 10), (300, 300), distance))

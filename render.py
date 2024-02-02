@@ -42,12 +42,12 @@ def grid_to_image(grid, coordinate_pairs, output_path):
     start = (0, 0)
     end = (0, 0)
 
-    for y in range(height):
-        for x in range(width):
-            new_img.putpixel((x, y), color_mapping.get(grid[y][x], black))
-            if grid[y][x] == 3:
+    for x in range(height):
+        for y in range(width):
+            new_img.putpixel((y, x), color_mapping.get(grid[x][y], black))
+            if grid[x][y] == 3:
                 start = (x, y)
-            if grid[y][x] == 4:
+            if grid[x][y] == 4:
                 end = (x, y)
 
     for startq, endq in coordinate_pairs:
@@ -71,16 +71,19 @@ def render_path(grid, edges, coordinate_pairs, output_path):
     start = (0, 0)
     end = (0, 0)
 
-    for y in range(height):
-        for x in range(width):
-            new_img.putpixel((x, y), color_mapping.get(grid[y][x], black))
-            if grid[y][x] == 3:
+    for x in range(height):
+        for y in range(width):
+            new_img.putpixel((y, x), color_mapping.get(grid[x][y], black))
+            if grid[x][y] == 3:
                 start = (x, y)
-            if grid[y][x] == 4:
+            if grid[x][y] == 4:
                 end = (x, y)
 
     for startq, endq in coordinate_pairs:
         draw.line([startq, endq], fill=purple, width=2)  # Change fill and width as needed
+
+    # start = (start[1], start[0])
+    # end = (end[1], end[0])
 
     current = end
     while current != start:
