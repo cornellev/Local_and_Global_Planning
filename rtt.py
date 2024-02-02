@@ -28,22 +28,22 @@ def check_node(coord):
 
 
 def sample_node(nodes, root_node):
-    search_radius = 30
-
-    min_x = max(0, root_node[0] - search_radius)
-    max_x = min(len(grid) - 1, root_node[0] + search_radius)
-    min_y = max(0, root_node[1] - search_radius)
-    max_y = min(len(grid[0]) - 1, root_node[1] + search_radius)
+    # search_radius = 30
+    #
+    # min_x = max(0, root_node[0] - search_radius)
+    # max_x = min(len(grid) - 1, root_node[0] + search_radius)
+    # min_y = max(0, root_node[1] - search_radius)
+    # max_y = min(len(grid[0]) - 1, root_node[1] + search_radius)
 
     # print(min_x, max_x, min_y, max_y)
 
-    coord = random.randint(min_x, max_x), random.randint(min_y, max_y)
+    # coord = random.randint(min_x, max_x), random.randint(min_y, max_y)
 
-    # coord = (random.randint(0, len(grid) - 1), random.randint(0, len(grid[0]) - 1))
+    coord = (random.randint(0, len(grid) - 1), random.randint(0, len(grid[0]) - 1))
 
     while coord in nodes or check_collision(coord):
-        # coord = (random.randint(0, len(grid) - 1), random.randint(0, len(grid[0]) - 1))
-        coord = random.randint(min_x, max_x), random.randint(min_y, max_y)
+        coord = (random.randint(0, len(grid) - 1), random.randint(0, len(grid[0]) - 1))
+        # coord = random.randint(min_x, max_x), random.randint(min_y, max_y)
 
     return coord
 
@@ -279,42 +279,51 @@ def treeSearch(num_iters, start, end, angle, dist):
 
     while len(not_propagated) > 0 and i < num_iters:
 
-        root_node = not_propagated.pop(0)
+        # root_node = not_propagated.pop(0)
 
-        valid_nodes = spawn(list(edges.keys()), root_node, edges[root_node], angle, dist)
+        # valid_nodes = spawn(list(edges.keys()), root_node, edges[root_node], angle, dist)
+        valid_node = sample_node(list(edges.keys()), start)
 
-        for node in valid_nodes:
-            best = None
-            best_dist = float('inf')
+        best = None
+        best_dist = float('inf')
 
-            for root in edges:
-                sub_dist = distance(root, node) + min_distance[root]
-                if sub_dist < best_dist \
-                        and not line_cross_check(grid, root, node):
-                    best = root
-                    best_dist = sub_dist
+        for root in edges:
+            sub_dist = distance(root, valid_node) + min_distance[root]
+            if sub_dist < best_dist \
+                    and not line_cross_check(grid, root, valid_node):
+                best = root
+                best_dist = sub_dist
 
-            not_propagated.append(node)
-            edges[node] = best
-            min_distance[node] = best_dist
-            edges_as_list.append((best, node))
+        if best is not None:
+            not_propagated.append(valid_node)
+            edges[valid_node] = best
+            min_distance[valid_node] = best_dist
+            edges_as_list.append((best, valid_node))
 
-            if (i % 50 == 0):
-                print(i)
-                # grid_to_image(grid, edges_as_list, 'test.png')
-                # imp = pygame.image.load('./test.png').convert()
-                # scrn.blit(imp, (0, 0))
-                # pygame.display.flip()
-                # time.sleep(1)
+        # for node in valid_nodes:
+        #     best = None
+        #     best_dist = float('inf')
+        #
+        #     for root in edges:
+        #         sub_dist = distance(root, node) + min_distance[root]
+        #         if sub_dist < best_dist \
+        #                 and not line_cross_check(grid, root, node):
+        #             best = root
+        #             best_dist = sub_dist
+        #
+        #     not_propagated.append(node)
+        #     edges[node] = best
+        #     min_distance[node] = best_dist
+        #     edges_as_list.append((best, node))
+
+        if (i % 50 == 0):
+            print(i)
+            grid_to_image(grid, edges_as_list, 'test.png')
+            imp = pygame.image.load('./test.png').convert()
+            scrn.blit(imp, (0, 0))
+            pygame.display.flip()
 
         i += 1
-
-    # nearest_node = find_nearest_node(end, nodes)
-    # if nearest_node is not None:
-    #     edges[end] = nearest_node
-    #     edges_as_list.append((nearest_node, end))
-    # else:
-    #     print("CRITICAL ERROR")
 
     best = None
     best_dist = float('inf')
