@@ -1,12 +1,10 @@
 import random
 import math
-import time
 
 import pygame
-from line_cross import line_cross_check
-from a_star import astar
+from utils.line_cross import line_cross_check
 
-from render import image_to_grid, grid_to_image, render_path
+from utils.render import image_to_grid, grid_to_image, render_path
 
 grid = image_to_grid('./maps/img_3.png')
 
@@ -341,8 +339,6 @@ def treeSearch(num_iters, start, end, angle, dist):
         edges[end] = best
         edges_as_list.append((best, end))
 
-    print(edges)
-
     # current_end = end
     # current_start = start
     # while current_end != current_start:
@@ -360,5 +356,10 @@ def treeSearch(num_iters, start, end, angle, dist):
 
 # nodes = newRTT(400, (10, 10), (300, 300))
 # nodes = rtt(400, (10, 10), (300, 300))
-edges = treeSearch(3000, (590, 590), (5, 5), math.radians(45), 25)
+edges = treeSearch(500, (590, 590), (5, 300), math.radians(45), 25)
 # print(astar(nodes, (10, 10), (300, 300), distance))
+
+print("Finished.")
+
+### NOTE: I believe this can even tell when a path is impossible by seeing if the end of the
+# route from the end never reaches the start?

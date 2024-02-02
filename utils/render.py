@@ -1,5 +1,7 @@
 from PIL import Image, ImageDraw
 
+from utils.spline import smooth_path, convert_to_coordinates
+
 white = (255, 255, 255, 255)
 black = (0, 0, 0, 255)
 red = (255, 0, 0, 100)
@@ -85,10 +87,21 @@ def render_path(grid, edges, coordinate_pairs, output_path):
     # start = (start[1], start[0])
     # end = (end[1], end[0])
 
+    waypoints = []
+
     current = end
     while current != start:
         draw.line([current, edges[current]], fill=red, width=2)
         current = edges[current]
+        waypoints.append(list(current))
+
+    smoothed_path = [(round(x[0]), round(x[1])) for x in convert_to_coordinates(smooth_path(list(
+        end), list(start), waypoints))]
+    print(smoothed_path)
+
+    for coord in range(len(smoothed_path[:-1])):
+        draw.line([smoothed_path[coord], smoothed_path[coord + 1]], fill=green, width=2)
+
 
 
     box = (start[0] - 3, start[1] - 3, start[0] + 3, start[1] + 3)
