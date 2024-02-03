@@ -23,9 +23,17 @@ color_mapping = {
 def image_to_grid(map_path: str, reverse_colors: bool = False) -> Grid:
     """
     Converts a provided map path to a Grid.
+
     :param map_path: Path to a valid map (only black and white image).
+    :type map_path: str
+
     :param reverse_colors: Reverse the colors for obstacle vs free territory.
+    :type reverse_colors: bool
+
+    :return: 2D grid representing the environment.
+    :rtype: Grid
     """
+
     img = Image.open(map_path)
 
     pixels = list(img.getdata())
@@ -41,10 +49,20 @@ def image_to_grid(map_path: str, reverse_colors: bool = False) -> Grid:
     return pixels
 
 
-def grid_to_image(grid: Grid, coordinate_pairs: Edges, output_path: str):
+def grid_to_image(grid: Grid, edges: Edges, output_path: str):
     """
     Writes a given grid and set of edges to an image.
+
+    :param grid: 2D grid representing the environment.
+    :type grid: Grid
+
+    :param edges: List of node pairs representing edges to be drawn on the image.
+    :type edges: Edges
+
+    :param output_path: Path to save the output image to.
+    :type output_path: str
     """
+
     height = len(grid)
     width = len(grid[0])
 
@@ -61,7 +79,7 @@ def grid_to_image(grid: Grid, coordinate_pairs: Edges, output_path: str):
             if grid[x][y] == 4:
                 end = (x, y)
 
-    for start_node, end_node in coordinate_pairs:
+    for start_node, end_node in edges:
         draw.line([start_node, end_node], fill=purple, width=2)  # Change fill and width as needed
 
     box = (start[0] - 3, start[1] - 3, start[0] + 3, start[1] + 3)
@@ -75,7 +93,20 @@ def grid_to_image(grid: Grid, coordinate_pairs: Edges, output_path: str):
 def render_path(grid: Grid, path: Path, edges: Edges, output_path: str):
     """
     Renders a grid and edges along with the optimal path to an output file.
+
+    :param grid: 2D grid representing the environment.
+    :type grid: Grid
+
+    :param path: Dictionary representing the optimal path from end to start.
+    :type path: Path
+
+    :param edges: List of node pairs representing edges to be drawn on the image.
+    :type edges: Edges
+
+    :param output_path: Path to save the output image to.
+    :type output_path: str
     """
+
     height = len(grid)
     width = len(grid[0])
 

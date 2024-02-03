@@ -1,4 +1,3 @@
-import math
 import random
 import time
 import pygame
@@ -12,8 +11,18 @@ import config
 def random_sample_node(grid: Grid, node_list: NodeList) -> Node:
     """
     Randomly sample a node on the grid that is not on an obstacle or an existent node.
+
+    :param grid: 2D grid representing the environment.
+    :type grid: Grid
+
+    :param node_list: List of existing nodes.
+    :type node_list: NodeList
+
+    :return: Randomly sampled node.
+    :rtype: Node
     """
-    coord = (random.randint(0, len(grid) - 1), random.randint(0, len(grid[0]) - 1))
+
+    coord: Node = (random.randint(0, len(grid) - 1), random.randint(0, len(grid[0]) - 1))
 
     while coord in node_list or check_collision(grid, coord):
         coord = (random.randint(0, len(grid) - 1), random.randint(0, len(grid[0]) - 1))
@@ -25,15 +34,28 @@ def initial_spawn_nodes(grid: Grid, start: Node, dist: int) -> NodeList:
     """
     Spawn one to four nodes from the start node with distance 'dist' to extend the initial search
     area of the algorithm.
+
+    :param grid: 2D grid representing the environment.
+    :type grid: Grid
+
+    :param start: Starting node for initial spawning.
+    :type start: Node
+
+    :param dist: Distance from the start node to spawn additional nodes.
+    :type dist: int
+
+    :return: List of valid nodes spawned around the start node.
+    :rtype: NodeList
     """
-    nodes = [
+
+    nodes: NodeList = [
         (start[0] + dist, start[1] + dist),
         (start[0] + dist, start[1] - dist),
         (start[0] - dist, start[1] + dist),
         (start[0] - dist, start[1] - dist)
     ]
 
-    valid_nodes = []
+    valid_nodes: NodeList = []
 
     for node in nodes:
         if not (
@@ -45,34 +67,53 @@ def initial_spawn_nodes(grid: Grid, start: Node, dist: int) -> NodeList:
     return valid_nodes
 
 
-def rrt_sid(grid: Grid, num_iters: int, start: Node, end: Node, dist: int, screen, out: str):
+def rrt_sid(grid: Grid, num_iters: int, start: Node, end: Node, dist: int, screen: pygame.Surface, out: str):
     """
     Custom version of Rapidly Exploring Random Tree (RRT) which continuously optimizes the node
     tree to minimize distance from the start node.
+
+    :param grid: 2D grid representing the environment.
+    :type grid: Grid
+
+    :param num_iters: Number of iterations for the RRT-SID algorithm.
+    :type num_iters: int
+
+    :param start: Starting node for the pathfinding.
+    :type start: Node
+
+    :param end: Destination node for the pathfinding.
+    :type end: Node
+
+    :param dist: Distance for initial node spawning.
+    :type dist: int
+
+    :param screen: Pygame screen object for visualization (optional).
+    :type screen: pygame.Surface
+
+    :param out: Output path for saving visualization images.
+    :type out: str
     """
 
     grid[start[0]][start[1]] = 3
     grid[end[0]][end[1]] = 4
 
-    edges = {start: start}
-    edges_as_list = []
-    not_propagated = []
-    min_distance = {start: 0}
+    edges: Edges = {start: start}
+    edges_as_list: List[Tuple[Edge, Edge]] = []
+    min_distance: Path = {start: 0}
 
-    valid_nodes = initial_spawn_nodes(grid, start, dist)
+    valid_nodes: NodeList = initial_spawn_nodes(grid, start, dist)
 
     for node in valid_nodes:
-        not_propagated.append(node)
         edges[node] = start
         edges_as_list.append((start, node))
         min_distance[node] = euclidean_distance(node, start)
 
     i = 0
 
-    while len(not_propagated) > 0 and i < num_iters:
-        valid_node = random_sample_node(grid, list(edges.keys()))
+    while i < num_iters:
+        valid_node: Node = random_sample_node(grid, list(edges.keys()))
 
-        best = None
+        best: Node = None
         best_dist = float('inf')
 
         for root in edges:
@@ -83,7 +124,6 @@ def rrt_sid(grid: Grid, num_iters: int, start: Node, end: Node, dist: int, scree
                 best_dist = sub_dist
 
         if best is not None:
-            not_propagated.append(valid_node)
             edges[valid_node] = best
             min_distance[valid_node] = best_dist
             edges_as_list.append((best, valid_node))
@@ -98,7 +138,7 @@ def rrt_sid(grid: Grid, num_iters: int, start: Node, end: Node, dist: int, scree
 
         i += 1
 
-    best = None
+    best: Node = None
     best_dist = float('inf')
 
     for root in edges:

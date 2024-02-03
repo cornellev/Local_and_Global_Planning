@@ -1,10 +1,30 @@
 import numpy as np
 from scipy.interpolate import CubicSpline
-# import matplotlib.pyplot as plt
+
+from type_hints.types import Node, NodeList
 
 
-def smooth_path(start: (int, int), end: (int, int), waypoints: [(int, int)]):
-    print(start, end, waypoints)
+def smooth_path(start: Node, end: Node, waypoints: NodeList) -> np.ndarray:
+    """
+    Generate a smooth path between the given start and end points, passing through waypoints.
+
+    :param start: The starting point of the path.
+    :type start: Node
+
+    :param end: The ending point of the path.
+    :type end: Node
+
+    :param waypoints: List of intermediate points to pass through.
+    :type waypoints: NodeList
+
+    :return: Smoothed path as a NumPy array, representing the coordinates of points along the path.
+    :rtype: np.ndarray
+
+    The function uses cubic spline interpolation to create a smooth curve connecting the provided
+    points and waypoints. The resulting path is parameterized to ensure a smoother transition
+    between the specified locations.
+    """
+
     start = np.array(start)
     end = np.array(end)
     waypoints = np.array(waypoints)
@@ -26,7 +46,18 @@ def smooth_path(start: (int, int), end: (int, int), waypoints: [(int, int)]):
     return smoothed_path
 
 
-def convert_to_coordinates(smoothed_path):
+def convert_to_coordinates(smoothed_path: np.ndarray) -> NodeList:
+    """
+    Extract x and y coordinates from a smoothed path and combine them into a list of coordinate
+    pairs.
+
+    :param smoothed_path: Smoothed path as a NumPy array, representing the coordinates of points along the path.
+    :type smoothed_path: np.ndarray
+
+    :return: List of coordinate pairs (x, y).
+    :rtype: List[Tuple[float, float]]
+    """
+
     # Extract x and y coordinates from the smoothed path
     x_coordinates = smoothed_path[:, 0]
     y_coordinates = smoothed_path[:, 1]
@@ -35,23 +66,3 @@ def convert_to_coordinates(smoothed_path):
     coordinates = list(zip(x_coordinates, y_coordinates))
 
     return coordinates
-
-# Example usage:
-# start_point = np.array([0, 0])
-# end_point = np.array([20, 10])
-# waypoints = np.array([[2, 5], [5, 7], [15, 1]])
-#
-# smoothed_path = smooth_path(start_point, end_point, waypoints)
-#
-# # Plot the original waypoints and the smoothed path
-# plt.plot(waypoints[:, 0], waypoints[:, 1], 'ro', label='Waypoints')
-# plt.plot(smoothed_path[:, 0], smoothed_path[:, 1], 'b-', label='Smoothed Path')
-# plt.scatter([start_point[0], end_point[0]], [start_point[1], end_point[1]], c='g', marker='s',
-#             label='Start/End Points')
-#
-# plt.legend()
-# plt.xlabel('X-coordinate')
-# plt.ylabel('Y-coordinate')
-# plt.title('Smoothed Path using Cubic Splines')
-# plt.grid(True)
-# plt.show()
