@@ -244,5 +244,4 @@ def extract_path(nodes, start: Node, end: Node):
     while current != start:
         path.append((nodes[current], current))
         current = nodes[current]
-    path.reverse()
     return path
