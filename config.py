@@ -3,11 +3,11 @@ from type_hints.types import Node
 # Algorithm - rrt_star or rrt_sid
 algo: str = "rrt_sid"
 
-iters: int = 1000
+iters: int = 500
 start_node: Node = (5, 5)
 end_node: Node = (340, 340)
 initial_generate_dist: int = 50  # Sometimes, increasing leads to reaching farther areas
-padding: int = 5
+padding: int = 4
 
 # Render
 map_bw_reverse: bool = False  # Reverse black and white in obstacle readings
