@@ -1,8 +1,10 @@
 import random
 import time
+
+import numpy as np
 import pygame
 
-from utils.render import grid_to_image, render_path
+from utils.render import grid_to_image, render_path, render_path_new
 from utils.occupancy_grid import *
 
 import config
@@ -155,3 +157,92 @@ def rrt_sid(grid: Grid, num_iters: int, start: Node, end: Node, dist: int, scree
         edges_as_list.append((best, end))
 
     render_path(grid, edges, edges_as_list, out)
+
+
+def rrt_star(grid: Grid, num_iters: int, start: Node, end: Node, dist: int, screen=None, out: str = ""):
+    grid[start[0]][start[1]] = 3
+    grid[end[0]][end[1]] = 4
+
+    nodes: Dict[Node, Node] = {start: start}
+    edges_as_list: List[Tuple[Node, Node]] = []
+    cost: Dict[Node, float] = {start: 0.0}
+
+    i = 0
+
+    while i < num_iters:
+        valid_node: Node = random_sample_node(grid, list(nodes.keys()))
+
+        nearest_node, nearest_node_cost = nearest_neighbor(valid_node, nodes, cost)
+
+        new_node = steer(nearest_node, valid_node, dist)
+        if new_node is not None and not (check_collision(grid, new_node) or line_cross_check(grid, nearest_node, new_node)):
+            near_nodes = near_neighbors(new_node, nodes, max_dist=dist)
+            min_cost_node = nearest_node
+            min_cost = nearest_node_cost + euclidean_distance(nearest_node, new_node)
+
+            for near_node in near_nodes:
+                cur_cost = cost[near_node] + euclidean_distance(near_node, new_node)
+                if cur_cost < min_cost and not line_cross_check(grid, near_node, new_node):
+                    min_cost_node = near_node
+                    min_cost = cur_cost
+
+            nodes[new_node] = min_cost_node
+            edges_as_list.append((min_cost_node, new_node))
+            cost[new_node] = min_cost
+
+            # Rewiring step
+            for near_node in near_nodes:
+                potential_cost = cost[new_node] + euclidean_distance(new_node, near_node)
+                if potential_cost < cost[near_node] and not line_cross_check(grid, new_node, near_node):
+                    nodes[near_node] = new_node
+                    edges_as_list.append((new_node, near_node))
+                    cost[near_node] = potential_cost
+
+            if config.debug and i % config.debug_iters == 0:  # Visualization (optional)
+                print(i)
+                grid_to_image(grid, edges_as_list, out)
+                imp = pygame.image.load(out).convert()
+                screen.blit(imp, (0, 0))
+                pygame.display.flip()
+                time.sleep(0.1)
+
+        i += 1
+
+    nearest_end, _ = nearest_neighbor(end, nodes, cost)
+    nodes[end] = nearest_end
+    edges_as_list.append((nearest_end, end))
+
+    # Final path extraction
+    path = extract_path(nodes, start, end)
+    render_path_new(grid, path, edges_as_list, out)
+
+
+def nearest_neighbor(target_node, nodes, cost):
+    nearest_node = min(nodes, key=lambda node: euclidean_distance(node, target_node))
+    nearest_node_cost = cost[nearest_node]
+    return nearest_node, nearest_node_cost
+
+
+def steer(from_node: Node, to_node: Node, max_distance: int) -> Node:
+    direction = np.array(to_node) - np.array(from_node)
+    distance_to_target = np.linalg.norm(direction)
+    if distance_to_target > max_distance:
+        normalized_direction = direction / distance_to_target
+        new_node = from_node + max_distance * normalized_direction
+        return tuple(map(int, new_node))
+    else:
+        return to_node
+
+
+def near_neighbors(target_node: Node, nodes, max_dist: int):
+    return [node for node in nodes if euclidean_distance(node, target_node) <= max_dist]
+
+
+def extract_path(nodes, start: Node, end: Node):
+    path = []
+    current = end
+    while current != start:
+        path.append((nodes[current], current))
+        current = nodes[current]
+    path.reverse()
+    return path

@@ -1,10 +1,14 @@
+import time
+
 import pygame
 
 from type_hints.types import Grid
 from utils.render import image_to_grid
 import config
 
-grid: Grid = image_to_grid(config.map_path)
+start_time = time.time()
+
+grid: Grid = image_to_grid(config.map_path, reverse_colors=config.map_bw_reverse)
 
 screen = None
 if config.debug:
@@ -20,3 +24,6 @@ config.algo_options[config.algo](
     screen,
     config.out_path
 )
+
+print("Finished in:")
+print(f"{time.time() - start_time} seconds.")
