@@ -1,8 +1,10 @@
 import pygame
+
+from type_hints.types import Grid
 from utils.render import image_to_grid
 import config
 
-grid = image_to_grid(config.map_path)
+grid: Grid = image_to_grid(config.map_path)
 
 screen = None
 if config.debug:

@@ -1,5 +1,6 @@
 from PIL import Image, ImageDraw
 
+from type_hints.types import Grid, Edges, Path
 from utils.spline import smooth_path, convert_to_coordinates
 
 white = (255, 255, 255, 255)
@@ -19,8 +20,13 @@ color_mapping = {
 }
 
 
-def image_to_grid(path, reverse_colors=False):
-    img = Image.open(path)
+def image_to_grid(map_path: str, reverse_colors: bool = False) -> Grid:
+    """
+    Converts a provided map path to a Grid.
+    :param map_path: Path to a valid map (only black and white image).
+    :param reverse_colors: Reverse the colors for obstacle vs free territory.
+    """
+    img = Image.open(map_path)
 
     pixels = list(img.getdata())
     width, height = img.size
@@ -35,7 +41,10 @@ def image_to_grid(path, reverse_colors=False):
     return pixels
 
 
-def grid_to_image(grid, coordinate_pairs, output_path):
+def grid_to_image(grid: Grid, coordinate_pairs: Edges, output_path: str):
+    """
+    Writes a given grid and set of edges to an image.
+    """
     height = len(grid)
     width = len(grid[0])
 
@@ -52,8 +61,8 @@ def grid_to_image(grid, coordinate_pairs, output_path):
             if grid[x][y] == 4:
                 end = (x, y)
 
-    for startq, endq in coordinate_pairs:
-        draw.line([startq, endq], fill=purple, width=2)  # Change fill and width as needed
+    for start_node, end_node in coordinate_pairs:
+        draw.line([start_node, end_node], fill=purple, width=2)  # Change fill and width as needed
 
     box = (start[0] - 3, start[1] - 3, start[0] + 3, start[1] + 3)
     draw.ellipse(box, outline="red", width=3)
@@ -62,9 +71,11 @@ def grid_to_image(grid, coordinate_pairs, output_path):
 
     new_img.save(output_path)
 
-    new_img.save(output_path)
 
-def render_path(grid, edges, coordinate_pairs, output_path):
+def render_path(grid: Grid, path: Path, edges: Edges, output_path: str):
+    """
+    Renders a grid and edges along with the optimal path to an output file.
+    """
     height = len(grid)
     width = len(grid[0])
 
@@ -81,34 +92,26 @@ def render_path(grid, edges, coordinate_pairs, output_path):
             if grid[x][y] == 4:
                 end = (x, y)
 
-    for startq, endq in coordinate_pairs:
-        draw.line([startq, endq], fill=purple, width=2)  # Change fill and width as needed
-
-    # start = (start[1], start[0])
-    # end = (end[1], end[0])
+    for start_node, end_node in edges:
+        draw.line([start_node, end_node], fill=purple, width=2)  # Change fill and width as needed
 
     waypoints = []
 
     current = end
     while current != start:
-        draw.line([current, edges[current]], fill=(255, 0, 0, 255), width=2)
-        current = edges[current]
+        draw.line([current, path[current]], fill=(255, 0, 0, 255), width=2)
+        current = path[current]
         waypoints.append(list(current))
 
     smoothed_path = [(round(x[0]), round(x[1])) for x in convert_to_coordinates(smooth_path(list(
         end), list(start), waypoints))]
-    print(smoothed_path)
 
     for coord in range(len(smoothed_path[:-1])):
         draw.line([smoothed_path[coord], smoothed_path[coord + 1]], fill=green, width=2)
-
-
 
     box = (start[0] - 3, start[1] - 3, start[0] + 3, start[1] + 3)
     draw.ellipse(box, outline="red", width=3)
     box = (end[0] - 3, end[1] - 3, end[0] + 3, end[1] + 3)
     draw.ellipse(box, outline="green", width=5)
-
-    new_img.save(output_path)
 
     new_img.save(output_path)
