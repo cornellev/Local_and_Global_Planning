@@ -1,19 +1,13 @@
-from global_sim.algorithm import rrt_sid, rrt_star
 from type_hints.types import Node
 
-# Algorithm
-algo_options = {
-    "rrt_sid": rrt_sid,
-    "rrt_star": rrt_star
-}
-
-algo: str = "rrt_star"
+# Algorithm - rrt_star or rrt_sid
+algo: str = "rrt_sid"
 
 iters: int = 1000
 start_node: Node = (5, 5)
 end_node: Node = (340, 340)
 initial_generate_dist: int = 50  # Sometimes, increasing leads to reaching farther areas
-
+padding: int = 5
 
 # Render
 map_bw_reverse: bool = False  # Reverse black and white in obstacle readings

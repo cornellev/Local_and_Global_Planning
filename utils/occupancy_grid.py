@@ -19,7 +19,7 @@ def line_cross_check(grid: Grid, node_a: Node, node_b: Node) -> bool:
         err = dx / 2.0
         while x0 != x1:
             if 0 <= x0 < len(grid[0]) and 0 <= y0 < len(grid):
-                if grid[y0][x0] == 1:
+                if grid[y0][x0] == 1 or grid[y0][x0] == 2:
                     return True
             err -= dy
             if err < 0:
@@ -30,7 +30,7 @@ def line_cross_check(grid: Grid, node_a: Node, node_b: Node) -> bool:
         err = dy / 2.0
         while y0 != y1:
             if 0 <= x0 < len(grid[0]) and 0 <= y0 < len(grid):
-                if grid[y0][x0] == 1:
+                if grid[y0][x0] == 1 or grid[y0][x0] == 2:
                     return True
             err -= dx
             if err < 0:
@@ -39,7 +39,7 @@ def line_cross_check(grid: Grid, node_a: Node, node_b: Node) -> bool:
             y0 += y_sign
 
     if 0 <= x0 < len(grid[0]) and 0 <= y0 < len(grid):
-        if grid[y0][x0] == 1:
+        if grid[y0][x0] == 1 or grid[y0][x0] == 2:
             return True
 
     return False
@@ -55,6 +55,7 @@ def check_collision(grid: Grid, node: Node) -> bool:
             or node[1] < 0
             or node[1] > len(grid[0]) - 1
             or grid[node[0]][node[1]] == 1
+            or grid[node[0]][node[1]] == 2
 
     )
 

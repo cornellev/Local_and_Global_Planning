@@ -1,5 +1,6 @@
 from PIL import Image, ImageDraw
 
+import config
 from type_hints.types import Grid, Edges, Path
 from utils.spline import smooth_path, convert_to_coordinates
 
@@ -9,11 +10,12 @@ red = (255, 0, 0, 100)
 purple = (83, 11, 120, 150)
 purple2 = (106, 12, 153, 100)
 green = (0, 255, 0, 100)
-pink = (255, 192, 203, 100)
+pink = (255, 192, 203, 50)
 
 color_mapping = {
     0: black,
     1: white,
+    2: pink,
     3: black,
     4: black,
     5: black
@@ -41,10 +43,24 @@ def image_to_grid(map_path: str, reverse_colors: bool = False) -> Grid:
     pixels = [pixels[i * width:(i + 1) * width] for i in range(height)]
     for pixel_row in pixels:
         for pixel in range(len(pixel_row)):
-            if all([x > 150 for x in pixel_row[pixel]]):
-                pixel_row[pixel] = 1 if not reverse_colors else 0
-            else:
-                pixel_row[pixel] = 0 if not reverse_colors else 1
+            if pixel_row[pixel] != 2:
+                if all([x > 150 for x in pixel_row[pixel]]):
+                    pixel_row[pixel] = 1 if not reverse_colors else 0
+                else:
+                    pixel_row[pixel] = 0 if not reverse_colors else 1
+
+    for pixel_row in range(len(pixels)):
+        for pixel in range(len(pixels[pixel_row])):
+            if pixels[pixel_row][pixel] == 1:
+                top = max(0, pixel_row - config.padding)
+                bottom = min(pixel_row + config.padding, len(pixels) - 1)
+                left = max(0, pixel - config.padding)
+                right = min(pixel + config.padding, len(pixels[0]))
+
+                for j in range(top, bottom):
+                    for k in range(left, right):
+                        if pixels[j][k] != 1:
+                            pixels[j][k] = 2
 
     return pixels
 
