@@ -1,0 +1,8 @@
+prefix=/home/sloth/Local_and_Global_Planning/ros/catkin_ws/install
+
+Name: planning_sim
+Description: Description of planning_sim
+Version: 0.0.0
+Cflags: 
+Libs: -L${prefix}/lib 
+Requires: 

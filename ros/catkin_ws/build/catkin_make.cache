@@ -1,0 +1,2 @@
+f1tenth_simulator:planning_sim
+-DCATKIN_DEVEL_PREFIX=/home/sloth/Local_and_Global_Planning/ros/catkin_ws/devel -DCMAKE_INSTALL_PREFIX=/home/sloth/Local_and_Global_Planning/ros/catkin_ws/install -G Unix Makefiles
