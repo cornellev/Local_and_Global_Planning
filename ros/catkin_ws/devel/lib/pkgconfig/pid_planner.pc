@@ -1,0 +1,8 @@
+prefix=/home/sloth/Local_and_Global_Planning/ros/catkin_ws/devel
+
+Name: pid_planner
+Description: Description of pid_planner
+Version: 1.0.0
+Cflags: -I/home/sloth/Local_and_Global_Planning/ros/catkin_ws/src/external/ros_motion_planning/src/core/local_planner/pid_planner/include
+Libs: -L${prefix}/lib 
+Requires: local_planner

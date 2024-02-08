@@ -1,0 +1,8 @@
+prefix=/home/sloth/Local_and_Global_Planning/ros/catkin_ws/install
+
+Name: trajectory_optimization
+Description: Description of trajectory_optimization
+Version: 0.0.0
+Cflags: -I${prefix}/include
+Libs: -L${prefix}/lib 
+Requires: voronoi_layer utils

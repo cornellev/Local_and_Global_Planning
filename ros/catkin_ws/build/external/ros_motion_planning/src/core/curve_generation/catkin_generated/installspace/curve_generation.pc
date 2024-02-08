@@ -1,0 +1,8 @@
+prefix=/home/sloth/Local_and_Global_Planning/ros/catkin_ws/install
+
+Name: curve_generation
+Description: Description of curve_generation
+Version: 0.0.0
+Cflags: -I${prefix}/include
+Libs: -L${prefix}/lib -lcurve_generation
+Requires: utils

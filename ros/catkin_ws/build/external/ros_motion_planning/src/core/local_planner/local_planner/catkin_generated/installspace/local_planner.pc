@@ -1,0 +1,8 @@
+prefix=/home/sloth/Local_and_Global_Planning/ros/catkin_ws/install
+
+Name: local_planner
+Description: Description of local_planner
+Version: 0.0.0
+Cflags: -I${prefix}/include
+Libs: -L${prefix}/lib -llocal_planner
+Requires: utils
