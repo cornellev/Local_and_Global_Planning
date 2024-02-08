@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import rospy
+import rospkg
 from sensor_msgs.msg import Image
 from nav_msgs.msg import OccupancyGrid
 from PIL import Image as PILImage
@@ -63,7 +64,8 @@ class ImageToOccupancyGrid:
 
 if __name__ == '__main__':
     try:
-        image_to_occupancy_grid = ImageToOccupancyGrid('/home/sloth/Local_and_Global_Planning/ros/catkin_ws/src/planning_sim/src/image.png')
+        path = rospkg.RosPack().get_path('planning_sim')
+        image_to_occupancy_grid = ImageToOccupancyGrid(path + '/src/image.png')
         image_to_occupancy_grid.publish_occupancy_grid()
     except rospy.ROSInterruptException:
         pass
