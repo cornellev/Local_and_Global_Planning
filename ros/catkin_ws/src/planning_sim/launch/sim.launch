@@ -1,0 +1,4 @@
+<launch>
+    <node pkg="planning_sim" type="occupancy_grid_publish.py" name="occupancy_grid" output="screen"/>
+    <node name="rviz" pkg="rviz" type="rviz" args="-d $(find planning_sim)/rviz_conf/conf.rviz"/>
+</launch>

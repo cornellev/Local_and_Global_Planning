@@ -63,7 +63,7 @@ class ImageToOccupancyGrid:
 
 if __name__ == '__main__':
     try:
-        image_to_occupancy_grid = ImageToOccupancyGrid('src/planning_sim/src/image.png')
+        image_to_occupancy_grid = ImageToOccupancyGrid('/home/sloth/Local_and_Global_Planning/ros/catkin_ws/src/planning_sim/src/image.png')
         image_to_occupancy_grid.publish_occupancy_grid()
     except rospy.ROSInterruptException:
         pass
