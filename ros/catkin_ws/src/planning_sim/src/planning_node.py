@@ -1,27 +1,29 @@
 #!/usr/bin/env python3
 
 import rospy
-from std_msgs.msg import String
-from nav_msgs.msg import OccupancyGrid
+from nav_msgs.msg import OccupancyGrid, Path
+from geometry_msgs.msg import PoseStamped, Pose, Point, Quaternion
+from std_msgs.msg import Header
+import numpy as np
 
 def find_path():
-    x = "hawwo"
-    rospy.loginfo(x)
-    pub.publish(x)
+    pass
+
+def grid_setup(data):
+    grid = data.data
 
 if __name__ == '__main__':
     try:
-	height = 800
-	width = 800
-	resolution = .25
+        grid = None
+        target = None
+        current_pose = None
 
-
-        pub = rospy.Publisher('coords', String, queue_size=10)
         rospy.init_node('planning_node', anonymous=True)
-        rate = rospy.Rate(10)
-        while not rospy.is_shutdown():
-                find_path()
-                rate.sleep()
+        rospy.Subscriber("move_base_simple/goal", PoseStamped, lambda data: target = data.pose.position)
+        rospy.Subscriber("", PoseStamped, lambda data: current_pose = data.pose.position)
+        rospy.Subscriber("occupancy_grid", OccupancyGrid, lambda data: grid = data.data)
+        rospy.Publisher("vector_path", Path, queue_size=1)
+
         rospy.spin()
     except rospy.ROSInterruptException:
         pass
