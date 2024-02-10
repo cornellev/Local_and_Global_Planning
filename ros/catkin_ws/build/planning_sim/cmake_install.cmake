@@ -1,8 +1,8 @@
-# Install script for directory: /home/sloth/Local_and_Global_Planning/ros/catkin_ws/src/planning_sim
+# Install script for directory: /home/sloth/Programming/CEV/global_and_local_planning/ros/catkin_ws/src/planning_sim
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
-  set(CMAKE_INSTALL_PREFIX "/home/sloth/Local_and_Global_Planning/ros/catkin_ws/install")
+  set(CMAKE_INSTALL_PREFIX "/home/sloth/Programming/CEV/global_and_local_planning/ros/catkin_ws/install")
 endif()
 string(REGEX REPLACE "/$" "" CMAKE_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}")
 
@@ -38,17 +38,17 @@ if(NOT DEFINED CMAKE_CROSSCOMPILING)
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/pkgconfig" TYPE FILE FILES "/home/sloth/Local_and_Global_Planning/ros/catkin_ws/build/planning_sim/catkin_generated/installspace/planning_sim.pc")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/pkgconfig" TYPE FILE FILES "/home/sloth/Programming/CEV/global_and_local_planning/ros/catkin_ws/build/planning_sim/catkin_generated/installspace/planning_sim.pc")
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
   file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/planning_sim/cmake" TYPE FILE FILES
-    "/home/sloth/Local_and_Global_Planning/ros/catkin_ws/build/planning_sim/catkin_generated/installspace/planning_simConfig.cmake"
-    "/home/sloth/Local_and_Global_Planning/ros/catkin_ws/build/planning_sim/catkin_generated/installspace/planning_simConfig-version.cmake"
+    "/home/sloth/Programming/CEV/global_and_local_planning/ros/catkin_ws/build/planning_sim/catkin_generated/installspace/planning_simConfig.cmake"
+    "/home/sloth/Programming/CEV/global_and_local_planning/ros/catkin_ws/build/planning_sim/catkin_generated/installspace/planning_simConfig-version.cmake"
     )
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/planning_sim" TYPE FILE FILES "/home/sloth/Local_and_Global_Planning/ros/catkin_ws/src/planning_sim/package.xml")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/planning_sim" TYPE FILE FILES "/home/sloth/Programming/CEV/global_and_local_planning/ros/catkin_ws/src/planning_sim/package.xml")
 endif()
 

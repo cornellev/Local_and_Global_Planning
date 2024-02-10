@@ -1,8 +1,0 @@
-prefix=/home/sloth/Local_and_Global_Planning/ros/catkin_ws/install
-
-Name: sim_env
-Description: Description of sim_env
-Version: 0.0.1
-Cflags: 
-Libs: -L${prefix}/lib 
-Requires: urdf xacro

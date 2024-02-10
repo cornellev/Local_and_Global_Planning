@@ -1,8 +1,0 @@
-prefix=/home/sloth/Local_and_Global_Planning/ros/catkin_ws/install
-
-Name: voronoi_layer
-Description: Description of voronoi_layer
-Version: 0.0.0
-Cflags: -I${prefix}/include
-Libs: -L${prefix}/lib -lvoronoi_layer
-Requires: costmap_2d dynamic_reconfigure nav_msgs roscpp

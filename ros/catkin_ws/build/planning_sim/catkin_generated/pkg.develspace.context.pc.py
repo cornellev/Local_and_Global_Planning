@@ -4,5 +4,5 @@ PROJECT_PKG_CONFIG_INCLUDE_DIRS = "".split(';') if "" != "" else []
 PROJECT_CATKIN_DEPENDS = "".replace(';', ' ')
 PKG_CONFIG_LIBRARIES_WITH_PREFIX = "".split(';') if "" != "" else []
 PROJECT_NAME = "planning_sim"
-PROJECT_SPACE_DIR = "/home/sloth/Local_and_Global_Planning/ros/catkin_ws/devel"
+PROJECT_SPACE_DIR = "/home/sloth/Programming/CEV/global_and_local_planning/ros/catkin_ws/devel"
 PROJECT_VERSION = "0.0.0"

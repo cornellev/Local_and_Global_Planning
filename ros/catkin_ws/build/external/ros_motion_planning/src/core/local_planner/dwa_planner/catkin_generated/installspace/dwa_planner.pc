@@ -1,8 +1,0 @@
-prefix=/home/sloth/Local_and_Global_Planning/ros/catkin_ws/install
-
-Name: dwa_planner
-Description: Description of dwa_planner
-Version: 1.17.1
-Cflags: -I${prefix}/include
-Libs: -L${prefix}/lib -ldwa_planner
-Requires: base_local_planner dynamic_reconfigure nav_msgs pluginlib sensor_msgs roscpp tf2 tf2_ros

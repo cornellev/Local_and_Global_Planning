@@ -1,4 +1,4 @@
-prefix=/home/sloth/Local_and_Global_Planning/ros/catkin_ws/devel
+prefix=/home/sloth/Programming/CEV/global_and_local_planning/ros/catkin_ws/devel
 
 Name: planning_sim
 Description: Description of planning_sim

@@ -11,7 +11,7 @@
 
 # since this file is sourced either use the provided _CATKIN_SETUP_DIR
 # or fall back to the destination set at configure time
-: ${_CATKIN_SETUP_DIR:=/home/sloth/Local_and_Global_Planning/ros/catkin_ws/install}
+: ${_CATKIN_SETUP_DIR:=/home/sloth/Programming/CEV/global_and_local_planning/ros/catkin_ws/install}
 _SETUP_UTIL="$_CATKIN_SETUP_DIR/_setup_util.py"
 unset _CATKIN_SETUP_DIR
 

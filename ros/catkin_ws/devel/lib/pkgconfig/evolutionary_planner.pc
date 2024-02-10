@@ -1,8 +1,0 @@
-prefix=/home/sloth/Local_and_Global_Planning/ros/catkin_ws/devel
-
-Name: evolutionary_planner
-Description: Description of evolutionary_planner
-Version: 0.0.0
-Cflags: -I/home/sloth/Local_and_Global_Planning/ros/catkin_ws/src/external/ros_motion_planning/src/core/global_planner/evolutionary_planner/include
-Libs: -L${prefix}/lib 
-Requires: global_planner curve_generation utils

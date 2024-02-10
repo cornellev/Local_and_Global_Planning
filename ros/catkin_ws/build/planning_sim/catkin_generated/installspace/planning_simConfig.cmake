@@ -67,14 +67,14 @@ set(planning_sim_CONFIG_INCLUDED TRUE)
 
 # set variables for source/devel/install prefixes
 if("FALSE" STREQUAL "TRUE")
-  set(planning_sim_SOURCE_PREFIX /home/sloth/Local_and_Global_Planning/ros/catkin_ws/src/planning_sim)
-  set(planning_sim_DEVEL_PREFIX /home/sloth/Local_and_Global_Planning/ros/catkin_ws/devel)
+  set(planning_sim_SOURCE_PREFIX /home/sloth/Programming/CEV/global_and_local_planning/ros/catkin_ws/src/planning_sim)
+  set(planning_sim_DEVEL_PREFIX /home/sloth/Programming/CEV/global_and_local_planning/ros/catkin_ws/devel)
   set(planning_sim_INSTALL_PREFIX "")
   set(planning_sim_PREFIX ${planning_sim_DEVEL_PREFIX})
 else()
   set(planning_sim_SOURCE_PREFIX "")
   set(planning_sim_DEVEL_PREFIX "")
-  set(planning_sim_INSTALL_PREFIX /home/sloth/Local_and_Global_Planning/ros/catkin_ws/install)
+  set(planning_sim_INSTALL_PREFIX /home/sloth/Programming/CEV/global_and_local_planning/ros/catkin_ws/install)
   set(planning_sim_PREFIX ${planning_sim_INSTALL_PREFIX})
 endif()
 
@@ -154,7 +154,7 @@ foreach(library ${libraries})
     set(lib_path "")
     set(lib "${library}-NOTFOUND")
     # since the path where the library is found is returned we have to iterate over the paths manually
-    foreach(path /home/sloth/Local_and_Global_Planning/ros/catkin_ws/install/lib;/opt/ros/noetic/lib)
+    foreach(path /home/sloth/Programming/CEV/global_and_local_planning/ros/catkin_ws/install/lib;/home/sloth/Programming/CEV/global_and_local_planning/ros/catkin_ws/devel/lib;/opt/ros/noetic/lib)
       find_library(lib ${library}
         PATHS ${path}
         NO_DEFAULT_PATH NO_CMAKE_FIND_ROOT_PATH)
