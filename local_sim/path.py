@@ -76,14 +76,6 @@ for i in range(N - 1):
 opts = {'ipopt.print_level': 0, "print_time": 0}
 optimizer.solver('ipopt', opts)
 
-
-# Define the callback function
-def my_callback(iter):
-    print(iter)
-    print(optimizer.stats()['iter_count'])
-
-
-# optimizer.callback(my_callback)
 solution = optimizer.solve()
 
 print(time.time() - start_time)
