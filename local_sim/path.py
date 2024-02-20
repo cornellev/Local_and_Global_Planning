@@ -78,8 +78,6 @@ solution = optimizer.solve()
 x_s, y_s, vx_s, vy_s = solution.value(state)
 ax_s, ay_s = solution.value(u)
 
-# print(ax_s, ay_s)
-
 # Plot trajectory
 plt.figure(figsize=(10, 6))
 plt.subplot(2, 1, 1)
@@ -112,7 +110,7 @@ plt.ylabel('Y')
 plt.title('Trajectory with Obstacle')
 plt.legend()
 plt.grid(True)
-plt.axis('equal')  # Set equal aspect ratio
+plt.axis('equal')
 
 for obstacle in obstacles:
     obstacle.plot()
