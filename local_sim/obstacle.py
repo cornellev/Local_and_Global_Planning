@@ -11,5 +11,4 @@ class Obstacle:
 
     def plot(self):
         circle = plt.Circle((self.x, self.y), self.radius, color='r', fill=False)
-
         plt.gca().add_patch(circle)

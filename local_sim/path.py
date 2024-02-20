@@ -2,10 +2,13 @@ from casadi import *
 from matplotlib import pyplot as plt
 
 from local_sim.obstacle import Obstacle
+import time
 
-dT = .1
+start_time = time.time()
+
+dT = .05
 T = 10
-N = int(T/dT)
+N = int(T / dT)
 
 optimizer = Opti()
 
@@ -23,18 +26,18 @@ obstacle_padding = .5
 
 # Decision variables
 state = optimizer.variable(4, N)
-u = optimizer.variable(2, N-1)
+u = optimizer.variable(2, N - 1)
 
 # Set up cost function
 cost = 0
 
 for i in range(N):
-    cost += (state[0, i] - end_state[0])**2
-    cost += (state[1, i] - end_state[1])**2
+    cost += (state[0, i] - end_state[0]) ** 2
+    cost += (state[1, i] - end_state[1]) ** 2
 
-for i in range(N-1):
-    cost += casadi.fabs(u[0, i])**2
-    cost += casadi.fabs(u[1, i])**2
+for i in range(N - 1):
+    cost += casadi.fabs(u[0, i]) ** 2
+    cost += casadi.fabs(u[1, i]) ** 2
 
 optimizer.minimize(cost)
 
@@ -69,11 +72,21 @@ for i in range(N - 1):
     optimizer.subject_to(optimizer.bounded(-1, u[0, i], 1))
     optimizer.subject_to(optimizer.bounded(-1, u[1, i], 1))
 
-
 # Calculate solution
-opts = {'ipopt.print_level': 0}
+opts = {'ipopt.print_level': 0, "print_time": 0}
 optimizer.solver('ipopt', opts)
+
+
+# Define the callback function
+def my_callback(iter):
+    print(iter)
+    print(optimizer.stats()['iter_count'])
+
+
+# optimizer.callback(my_callback)
 solution = optimizer.solve()
+
+print(time.time() - start_time)
 
 x_s, y_s, vx_s, vy_s = solution.value(state)
 ax_s, ay_s = solution.value(u)
@@ -82,7 +95,7 @@ ax_s, ay_s = solution.value(u)
 plt.figure(figsize=(10, 6))
 plt.subplot(2, 1, 1)
 plt.plot(x_s, y_s, label='Trajectory')
-plt.scatter(end_state[0], end_state[1], color='red', label='Target')
+plt.scatter(end_state[0], end_state[1], color='red', label='Obstacle')
 plt.xlabel('X')
 plt.ylabel('Y')
 plt.title('Trajectory')
@@ -103,11 +116,10 @@ plt.show()
 # Plot trajectory on a coordinate plane with obstacle
 plt.figure(figsize=(8, 6))
 plt.scatter(x_s, y_s, label='Trajectory', color='blue')
-plt.scatter(x_s, y_s, label='Trajectory', color='blue')
-plt.scatter(end_state[0], end_state[1], label='Target', color='red')
+plt.scatter(end_state[0], end_state[1], label='Obstacle', color='red')
 plt.xlabel('X')
 plt.ylabel('Y')
-plt.title('Trajectory with Obstacle')
+plt.title('Trajectory with Obstacles')
 plt.legend()
 plt.grid(True)
 plt.axis('equal')
@@ -116,9 +128,3 @@ for obstacle in obstacles:
     obstacle.plot()
 
 plt.show()
-
-
-
-
-
-
