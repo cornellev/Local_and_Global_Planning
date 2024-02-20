@@ -4,8 +4,6 @@ from matplotlib import pyplot as plt
 from local_sim.obstacle import Obstacle
 import time
 
-start_time = time.time()
-
 dT = .05
 T = 10
 N = int(T / dT)
@@ -73,8 +71,10 @@ for i in range(N - 1):
     optimizer.subject_to(optimizer.bounded(-1, u[1, i], 1))
 
 # Calculate solution
-opts = {'ipopt.print_level': 0, "print_time": 0}
+opts = {'ipopt.print_level': 0, 'print_time': 0, 'ipopt.sb': 'yes'}
 optimizer.solver('ipopt', opts)
+
+start_time = time.time()
 
 solution = optimizer.solve()
 
