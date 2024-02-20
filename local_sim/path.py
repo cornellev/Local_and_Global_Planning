@@ -36,8 +36,8 @@ for i in range(N):
     cost += (state[1, i] - end_state[1]) ** 2
 
 for i in range(N - 1):
-    cost += casadi.fabs(u[0, i]) ** 2
-    cost += casadi.fabs(u[1, i]) ** 2
+    cost += u[0, i] ** 2
+    cost += u[1, i] ** 2
 
 optimizer.minimize(cost)
 
