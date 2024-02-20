@@ -13,10 +13,10 @@ start_state = [0, 0, 0, 0]
 end_state = [4, 4, 0, 0]
 
 obstacles = [
-    Obstacle(1.5, 1.5, 1),  # x, y, radius
-    Obstacle(2.5, 2.5, .3),  # x, y, radius
-    Obstacle(3, 2, .5),  # x, y, radius
-    Obstacle(2.5, 4, .3)  # x, y, radius
+    Obstacle(1.5, 1.5, 1),
+    Obstacle(2.5, 2.5, .3),
+    Obstacle(3, 2, .5),
+    Obstacle(2.5, 4, .3)
 ]
 
 obstacle_padding = .5
