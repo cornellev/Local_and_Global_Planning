@@ -19,6 +19,8 @@ obstacles = [
     Obstacle(2.5, 4, .3)  # x, y, radius
 ]
 
+obstacle_padding = .5
+
 # Decision variables
 state = optimizer.variable(4, N)
 u = optimizer.variable(2, N-1)
@@ -49,7 +51,7 @@ for obstacle in obstacles:
         y = state[1, i]
         dist_from_center = (x - obstacle.x) ** 2 + (y - obstacle.y) ** 2
 
-        optimizer.subject_to(dist_from_center >= obstacle.radius ** 2)
+        optimizer.subject_to(dist_from_center >= (obstacle.radius ** 2 + obstacle_padding ** 2))
 
 for i in range(4):
     optimizer.subject_to(state[i, 0] == 0)
