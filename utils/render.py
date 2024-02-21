@@ -148,7 +148,7 @@ def render_path(grid: Grid, path: Path, edges: Edges, output_path: str):
     new_img.save(output_path)
 
 
-def render_path_new(grid: Grid, path, edges, output_path: str):
+def render_dict_path(grid: Grid, path, edges, output_path: str):
     """
     Renders a grid, edges, and the optimal path to an output file.
 
@@ -203,3 +203,26 @@ def render_path_new(grid: Grid, path, edges, output_path: str):
     new_img.save(output_path)
 
 
+def render_local_path_on_image(path, input_image, output_image):
+    """
+    Renders a local path on an input image and saves the output image.
+
+    :param path: List of coordinates representing the local path.
+    :type path: List[Tuple[int, int]]
+
+    :param input_image: Path to the input image.
+    :type input_image: str
+
+    :param output_image: Path to save the output image.
+    :type output_image: str
+    """
+    img = Image.open(input_image)
+    draw = ImageDraw.Draw(img)
+
+    for i in range(len(path) - 1):
+        start = path[i][0], path[i][1]
+        end = path[i+1][0], path[i+1][1]
+
+        draw.line([start, end], fill=pink, width=2)
+
+    img.save(output_image)

@@ -1,0 +1,3 @@
+[submodule "ros/catkin_ws/src/rviz_car_model"]
+	path = ros/catkin_ws/src/rviz_car_model
+	url = https://github.com/AutoLidarPerception/rviz_car_model

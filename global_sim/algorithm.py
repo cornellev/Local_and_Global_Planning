@@ -4,7 +4,7 @@ import time
 import numpy as np
 import pygame
 
-from utils.render import grid_to_image, render_path, render_path_new
+from utils.render import grid_to_image, render_path, render_dict_path
 from utils.occupancy_grid import *
 
 import config
@@ -158,6 +158,8 @@ def rrt_sid(grid: Grid, num_iters: int, start: Node, end: Node, dist: int, scree
 
     render_path(grid, edges, edges_as_list, out)
 
+    return extract_path_from_dict(edges, start, end)
+
 
 def rrt_star(grid: Grid, num_iters: int, start: Node, end: Node, dist: int, screen=None, out: str = ""):
     grid[start[0]][start[1]] = 3
@@ -214,7 +216,7 @@ def rrt_star(grid: Grid, num_iters: int, start: Node, end: Node, dist: int, scre
 
     # Final path extraction
     path = extract_path(nodes, start, end)
-    render_path_new(grid, path, edges_as_list, out)
+    render_dict_path(grid, path, edges_as_list, out)
 
 
 def nearest_neighbor(target_node, nodes, cost):
@@ -244,4 +246,15 @@ def extract_path(nodes, start: Node, end: Node):
     while current != start:
         path.append((nodes[current], current))
         current = nodes[current]
+    return path
+
+
+def extract_path_from_dict(nodes, start: Node, end: Node):
+    path = []
+    current = end
+    while current != start:
+        path.append(current)
+        current = nodes[current]
+    path.append(start)
+    path.reverse()
     return path
