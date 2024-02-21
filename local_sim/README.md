@@ -2,7 +2,7 @@
 
 path.py/obstacle.py
  - working, correctly avoids obstacles (circles)
- - model isn't ackermann (model is separated into component accelerations and velocities). Is this close enough?
+ - model isn't ackermann yet
 
 wheel_model.py
  - questionable model that approximates a wheel that you can turn and drive by accelerating
@@ -10,7 +10,7 @@ wheel_model.py
 
 bicycle_model.py
  - ackermann approximate kinematics 
- - same issue -- seems to work but defintely not avoiding obstacles correctly at all
+ - same issue -- seems to work but definitely not avoiding obstacles correctly at all
  - inputs are velocity and steering angular velocity -- this is questionable (can basically jump to any velocity instantaneously)
 
 bicycle_mode2.py

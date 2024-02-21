@@ -1,6 +1,7 @@
 from casadi import *
 from matplotlib import pyplot as plt
 
+from local_sim.kinematics.cartesian import CartesianKinematics
 from local_sim.obstacle import Obstacle
 import time
 
@@ -40,11 +41,8 @@ for i in range(N - 1):
 optimizer.minimize(cost)
 
 # Set up constraints
-for i in range(N - 1):
-    optimizer.subject_to(state[2, i + 1] == state[2, i] + u[0, i] * dT)
-    optimizer.subject_to(state[3, i + 1] == state[3, i] + u[1, i] * dT)
-    optimizer.subject_to(state[0, i + 1] == state[0, i] + state[2, i] * dT)
-    optimizer.subject_to(state[1, i + 1] == state[1, i] + state[3, i] * dT)
+for constraint in CartesianKinematics.get_constraints(state, u, dT, N):
+    optimizer.subject_to(constraint)
 
 for obstacle in obstacles:
     for i in range(N):
