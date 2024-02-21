@@ -41,14 +41,27 @@ target_waypoint = global_path[1]
 
 render_local_path_on_image([], config.out_path, 'test.png')
 
+total_dist = (target_waypoint[0] - current_position[0]) ** 2 + (target_waypoint[1] -
+                                                                current_position[1]) ** 2
+
 while (current_position[0], current_position[1]) != (global_path[-1][0], global_path[-1][1]):
     local_planner = LocalPlanner(.05, .25)
-    solution, state, u = local_planner.find_path(current_position, target_waypoint, [])
+
+    next_waypoint = None
+    if global_path.index(target_waypoint) + 1 < len(global_path):
+        next_waypoint = global_path[global_path.index(target_waypoint) + 1]
+
+    solution, state, u = local_planner.find_path(current_position, target_waypoint,
+                                                 next_waypoint, total_dist, [])
     path = local_planner.get_path_coords(solution, state)
     current_position = path[-1]
 
-    if (current_position[0] - target_waypoint[0])**2 + (current_position[1] - target_waypoint[1])**2 < 10:
+    if (current_position[0] - target_waypoint[0]) ** 2 + (
+            current_position[1] - target_waypoint[1]) ** 2 < 100:
         target_waypoint = global_path[global_path.index(target_waypoint) + 1]
+
+        total_dist = ((target_waypoint[0] - current_position[0]) ** 2 + (target_waypoint[1] -
+                                                                         current_position[1])) ** 2
 
     render_local_path_on_image(path, 'test.png', 'test.png')
     if config.debug:
