@@ -7,6 +7,7 @@ from utils.spline import smooth_path, convert_to_coordinates
 white = (255, 255, 255, 255)
 black = (0, 0, 0, 255)
 red = (255, 0, 0, 100)
+blue = (0, 0, 255, 100)
 purple = (83, 11, 120, 150)
 purple2 = (106, 12, 153, 100)
 green = (0, 255, 0, 100)
@@ -239,6 +240,6 @@ def render_local_path_on_image(path, input_image, output_image):
         start = path[i][0], path[i][1]
         end = path[i+1][0], path[i+1][1]
 
-        draw.line([start, end], fill=pink, width=2)
+        draw.line([start, end], fill=blue, width=4)
 
     img.save(output_image)
