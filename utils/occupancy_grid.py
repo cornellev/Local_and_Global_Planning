@@ -59,6 +59,9 @@ def line_gen(node_a: Node, node_b: Node, sampling_dist: float):
     dx = sampling_dist * math.cos(theta)
     dy = sampling_dist * math.sin(theta)
 
+    if dx == 0 or dy == 0:
+        return []
+
     num_samples = min(int(x_diff / dx), int(y_diff / dy))
 
     waypoints = []

@@ -58,8 +58,8 @@ class LocalPlanner:
 
         # Apply acceleration bounds
         for i in range(self.N - 1):
-            self.optimizer.subject_to(self.optimizer.bounded(-25, u[0, i], 25))
-            self.optimizer.subject_to(self.optimizer.bounded(-25, u[1, i], 25))
+            self.optimizer.subject_to(self.optimizer.bounded(-10, u[0, i], 10))
+            self.optimizer.subject_to(self.optimizer.bounded(-10, u[1, i], 10))
 
         # Calculate solution
         opts = {'ipopt.print_level': 0, 'print_time': 0, 'ipopt.sb': 'yes'}
@@ -81,15 +81,15 @@ class LocalPlanner:
         return path
 
 
-start_state = [0, 0, 0, 0]
-end_state = [4, 4, 0, 0]
-
-obstacles = [
-    Obstacle(1.5, 1.5, 1),
-    Obstacle(2.5, 2.5, .3),
-    Obstacle(3, 2, .5),
-    Obstacle(2.5, 4, .3)
-]
+# start_state = [0, 0, 0, 0]
+# end_state = [4, 4, 0, 0]
+#
+# obstacles = [
+#     Obstacle(1.5, 1.5, 1),
+#     Obstacle(2.5, 2.5, .3),
+#     Obstacle(3, 2, .5),
+#     Obstacle(2.5, 4, .3)
+# ]
 
 # planner = LocalPlanner(.05, 10)
 # solution, state, u = planner.find_path(start_state, end_state, obstacles)
