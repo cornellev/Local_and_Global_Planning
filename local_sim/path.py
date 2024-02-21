@@ -26,6 +26,9 @@ class LocalPlanner:
             cost += (state[0, i] - end_state[0]) ** 2
             cost += (state[1, i] - end_state[1]) ** 2
 
+            # cost += (state[2, i] - end_state[2]) ** 2
+            # cost += (state[3, i] - end_state[3]) ** 2
+
         for i in range(self.N - 1):
             cost += u[0, i] ** 2
             cost += u[1, i] ** 2
@@ -48,8 +51,8 @@ class LocalPlanner:
         for i in range(4):
             self.optimizer.subject_to(state[i, 0] == start_state[i])
 
-        self.optimizer.subject_to(state[0, self.N - 1] == end_state[0])
-        self.optimizer.subject_to(state[1, self.N - 1] == end_state[1])
+        # self.optimizer.subject_to(state[0, self.N - 1] == end_state[0])
+        # self.optimizer.subject_to(state[1, self.N - 1] == end_state[1])
 
         # Apply velocity bounds
         for i in range(self.N):

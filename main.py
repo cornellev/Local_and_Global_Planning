@@ -36,28 +36,51 @@ global_path = algo_options[config.algo](
 for i in range(len(global_path)):
     global_path[i] = (global_path[i][0], global_path[i][1], 0, 0)
 
-global_path = waypoints_gen(global_path, 40)
-
-local_planner = LocalPlanner(.01, 10)
-local_path = []
+current_position = global_path[0]
+target_waypoint = global_path[1]
 
 render_local_path_on_image([], config.out_path, 'test.png')
 
-for i in range(len(global_path) - 1):
-    local_planner = LocalPlanner(.05, 4)
-    solution, state, u = local_planner.find_path(global_path[i], global_path[i + 1], [])
+while (current_position[0], current_position[1]) != (global_path[-1][0], global_path[-1][1]):
+    local_planner = LocalPlanner(.05, .25)
+    solution, state, u = local_planner.find_path(current_position, target_waypoint, [])
     path = local_planner.get_path_coords(solution, state)
-    global_path[i+1] = path[-1]
-    local_path.extend(path)
+    current_position = path[-1]
 
-    render_local_path_on_image(local_path, config.out_path, 'test.png')
+    if (current_position[0] - target_waypoint[0])**2 + (current_position[1] - target_waypoint[1])**2 < 10:
+        target_waypoint = global_path[global_path.index(target_waypoint) + 1]
+
+    render_local_path_on_image(path, 'test.png', 'test.png')
     if config.debug:
         imp = pygame.image.load('test.png').convert()
         screen.blit(imp, (0, 0))
         pygame.display.flip()
 
-print("Finished in:")
-print(f"{time.time() - start_time} seconds.")
-
-if config.debug:
-    x = input()
+# for i in range(len(global_path)):
+#     global_path[i] = (global_path[i][0], global_path[i][1], 0, 0)
+#
+# global_path = waypoints_gen(global_path, 40)
+#
+# local_planner = LocalPlanner(.01, .25)
+# local_path = []
+#
+# render_local_path_on_image([], config.out_path, 'test.png')
+#
+# for i in range(len(global_path) - 1):
+#     local_planner = LocalPlanner(.05, .25)
+#     solution, state, u = local_planner.find_path(global_path[i], global_path[i + 1], [])
+#     path = local_planner.get_path_coords(solution, state)
+#     global_path[i+1] = path[-1]
+#     local_path.extend(path)
+#
+#     render_local_path_on_image(local_path, config.out_path, 'test.png')
+#     if config.debug:
+#         imp = pygame.image.load('test.png').convert()
+#         screen.blit(imp, (0, 0))
+#         pygame.display.flip()
+#
+# print("Finished in:")
+# print(f"{time.time() - start_time} seconds.")
+#
+# if config.debug:
+#     x = input()
