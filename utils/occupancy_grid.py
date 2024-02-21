@@ -1,3 +1,5 @@
+import math
+
 from type_hints.types import *
 
 
@@ -43,6 +45,41 @@ def line_cross_check(grid: Grid, node_a: Node, node_b: Node) -> bool:
             return True
 
     return False
+
+
+def line_gen(node_a: Node, node_b: Node, sampling_dist: float):
+    """
+    Generate a point every 'sampling_dist' dist from node_a to node_b
+    """
+    x_diff = node_b[0] - node_a[0]
+    y_diff = node_b[1] - node_a[1]
+
+    theta = math.atan2(y_diff, x_diff)
+
+    dx = sampling_dist * math.cos(theta)
+    dy = sampling_dist * math.sin(theta)
+
+    num_samples = min(int(x_diff / dx), int(y_diff / dy))
+
+    waypoints = []
+
+    for i in range(num_samples):
+        waypoints.append([int(node_a[0] + i * dx), int(node_a[1] + i * dy), 0, 0])
+
+    return waypoints
+
+
+def waypoints_gen(path: NodeList, sampling_dist: float):
+    """
+    Generate a list of waypoints from a given path
+    """
+    waypoints = []
+    for i in range(len(path) - 1):
+        waypoints.extend(line_gen(path[i], path[i+1], sampling_dist))
+
+    waypoints.append(path[-1])
+
+    return waypoints
 
 
 def check_collision(grid: Grid, node: Node) -> bool:
