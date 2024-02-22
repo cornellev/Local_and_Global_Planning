@@ -5,7 +5,6 @@ import pygame
 from local_sim.path import LocalPlanner
 from global_sim.algorithm import rrt_sid, rrt_star
 from type_hints.types import Grid
-from utils.occupancy_grid import waypoints_gen
 from utils.render import image_to_grid, render_local_path_on_image
 import config
 
@@ -47,18 +46,16 @@ total_dist = (target_waypoint[0] - current_position[0]) ** 2 + (target_waypoint[
 while (current_position[0], current_position[1]) != (global_path[-1][0], global_path[-1][1]):
     local_planner = LocalPlanner(.05, .25)
 
-    next_waypoint = None
-    if global_path.index(target_waypoint) + 1 < len(global_path):
-        next_waypoint = global_path[global_path.index(target_waypoint) + 1]
-
-    solution, state, u = local_planner.find_path(current_position, target_waypoint,
-                                                 next_waypoint, total_dist, [])
+    solution, state, u = local_planner.find_path(current_position, target_waypoint, total_dist, [])
     path = local_planner.get_path_coords(solution, state)
     current_position = path[-1]
 
     if (current_position[0] - target_waypoint[0]) ** 2 + (
-            current_position[1] - target_waypoint[1]) ** 2 < 100:
-        target_waypoint = global_path[global_path.index(target_waypoint) + 1]
+            current_position[1] - target_waypoint[1]) ** 2 < 25**2:
+        if global_path.index(target_waypoint) + 1 < len(global_path):
+            target_waypoint = global_path[global_path.index(target_waypoint) + 1]
+        else:
+            break
 
         total_dist = ((target_waypoint[0] - current_position[0]) ** 2 + (target_waypoint[1] -
                                                                          current_position[1])) ** 2

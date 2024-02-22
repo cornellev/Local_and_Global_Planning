@@ -16,7 +16,7 @@ class LocalPlanner:
 
         self.obstacle_padding = .5
 
-    def find_path(self, current_state, end_state, next_waypoint, total_dist, obstacles):
+    def find_path(self, current_state, end_state, total_dist, obstacles):
         # Decision variables
         state = self.optimizer.variable(4, self.N)
         u = self.optimizer.variable(2, self.N - 1)
@@ -30,22 +30,25 @@ class LocalPlanner:
 
             # Angle the velocity towards the next waypoint or set vel to zero if end node
             dist = (end_state[1] - current_state[1]) ** 2 + (end_state[0] - current_state[0]) ** 2
-            dist_ratio = ((total_dist - dist) / total_dist) ** 8
+            dist_ratio = ((total_dist - dist) / total_dist) ** 4
 
-            print(dist)
-            print(total_dist)
-            print(dist_ratio)
+            cost += dist_ratio * state[2, i] ** 2
+            cost += dist_ratio * state[3, i] ** 2
 
-            if next_waypoint is None:
-                cost += dist_ratio * state[2, i] ** 2
-                cost += dist_ratio * state[3, i] ** 2
-            else:
-                angle = math.atan2(next_waypoint[1] - end_state[1], next_waypoint[0] - end_state[0])
-                x = 2.5 * cos(angle)
-                y = 2.5 * sin(angle)
-
-                cost += 1 * dist_ratio * (state[2, i] - x) ** 2
-                cost += 1 * dist_ratio * (state[3, i] - y) ** 2
+            # print(dist)
+            # print(total_dist)
+            # print(dist_ratio)
+            #
+            # if next_waypoint is None:
+            #     cost += dist_ratio * state[2, i] ** 2
+            #     cost += dist_ratio * state[3, i] ** 2
+            # else:
+            #     angle = math.atan2(next_waypoint[1] - end_state[1], next_waypoint[0] - end_state[0])
+            #     x = 2.5 * cos(angle)
+            #     y = 2.5 * sin(angle)
+            #
+            #     cost += 1 * dist_ratio * (state[2, i] - x) ** 2
+            #     cost += 1 * dist_ratio * (state[3, i] - y) ** 2
 
         for i in range(self.N - 1):
             cost += u[0, i] ** 2
