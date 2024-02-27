@@ -159,7 +159,7 @@ def render_path(grid: Grid, path: Path, edges: Edges, output_path: str):
             end), list(start), waypoints))]
 
         for coord in range(len(smoothed_path[:-1])):
-            draw.line([smoothed_path[coord], smoothed_path[coord + 1]], fill=green, width=2)
+            draw.line([smoothed_path[coord], smoothed_path[coord + 1]], fill=blue, width=2)
 
     box = (start[0] - 3, start[1] - 3, start[0] + 3, start[1] + 3)
     draw.ellipse(box, outline="red", width=3)
@@ -215,7 +215,7 @@ def render_dict_path(grid: Grid, path, edges, output_path: str):
             end), list(start), waypoints))]
 
         for coord in range(len(smoothed_path) - 1):
-            draw.line([smoothed_path[coord], smoothed_path[coord + 1]], fill=green, width=2)
+            draw.line([smoothed_path[coord], smoothed_path[coord + 1]], fill=blue, width=1)
 
     box = (start[0] - 3, start[1] - 3, start[0] + 3, start[1] + 3)
     draw.ellipse(box, outline="red", width=3)
@@ -245,6 +245,6 @@ def render_local_path_on_image(path, input_image, output_image):
         start = path[i][0], path[i][1]
         end = path[i+1][0], path[i+1][1]
 
-        draw.line([start, end], fill=blue, width=4)
+        draw.line([start, end], fill=green, width=4)
 
     img.save(output_image)

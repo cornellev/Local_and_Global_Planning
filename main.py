@@ -41,8 +41,8 @@ target_waypoint = global_path[1]
 
 render_local_path_on_image([], config.out_path, 'test.png')
 
-total_dist = (target_waypoint[0] - current_position[0]) ** 2 + (target_waypoint[1] -
-                                                                current_position[1]) ** 2
+total_dist = ((target_waypoint[0] - current_position[0]) ** 2
+              + (target_waypoint[1] - current_position[1]) ** 2)
 
 obstacles = []
 search_radius = 10
@@ -61,8 +61,16 @@ while (current_position[0], current_position[1]) != (global_path[-1][0], global_
     path = local_planner.get_path_coords(solution, state)
     current_position = path[-1]
 
-    if (current_position[0] - target_waypoint[0]) ** 2 + (
-            current_position[1] - target_waypoint[1]) ** 2 < 25**2:
+    # 25 threshold if not the last waypoint, 10 if it is
+    threshold = 25 if not (
+            (target_waypoint[0], target_waypoint[1]) ==
+            (global_path[-1][0], global_path[-1][1])) else 5
+
+    if (
+            (current_position[0] - target_waypoint[0]) ** 2
+            + (current_position[1] - target_waypoint[1]) ** 2
+            < threshold ** 2
+    ):
         if global_path.index(target_waypoint) + 1 < len(global_path):
             target_waypoint = global_path[global_path.index(target_waypoint) + 1]
         else:
@@ -76,3 +84,5 @@ while (current_position[0], current_position[1]) != (global_path[-1][0], global_
         imp = pygame.image.load('test.png').convert()
         screen.blit(imp, (0, 0))
         pygame.display.flip()
+
+input("COMPLETE: %s seconds" % (time.time() - start_time))
