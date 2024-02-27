@@ -4,6 +4,8 @@ import config
 from type_hints.types import Grid, Edges, Path
 from utils.spline import smooth_path, convert_to_coordinates
 
+render_lines = True
+
 white = (255, 255, 255, 255)
 black = (0, 0, 0, 255)
 red = (255, 0, 0, 100)
@@ -96,8 +98,9 @@ def grid_to_image(grid: Grid, edges: Edges, output_path: str):
             if grid[x][y] == 4:
                 end = (x, y)
 
-    for start_node, end_node in edges:
-        draw.line([start_node, end_node], fill=purple, width=2)  # Change fill and width as needed
+    if render_lines:
+        for start_node, end_node in edges:
+            draw.line([start_node, end_node], fill=purple, width=2)  # Change fill and width as needed
 
     box = (start[0] - 3, start[1] - 3, start[0] + 3, start[1] + 3)
     draw.ellipse(box, outline="red", width=3)
@@ -140,22 +143,23 @@ def render_path(grid: Grid, path: Path, edges: Edges, output_path: str):
             if grid[x][y] == 4:
                 end = (x, y)
 
-    for start_node, end_node in edges:
-        draw.line([start_node, end_node], fill=purple, width=2)  # Change fill and width as needed
+    if render_lines:
+        for start_node, end_node in edges:
+            draw.line([start_node, end_node], fill=purple, width=2)  # Change fill and width as needed
 
-    waypoints = []
+        waypoints = []
 
-    current = end
-    while current != start:
-        draw.line([current, path[current]], fill=(255, 0, 0, 255), width=2)
-        current = path[current]
-        waypoints.append(list(current))
+        current = end
+        while current != start:
+            draw.line([current, path[current]], fill=(255, 0, 0, 255), width=2)
+            current = path[current]
+            waypoints.append(list(current))
 
-    smoothed_path = [(round(x[0]), round(x[1])) for x in convert_to_coordinates(smooth_path(list(
-        end), list(start), waypoints))]
+        smoothed_path = [(round(x[0]), round(x[1])) for x in convert_to_coordinates(smooth_path(list(
+            end), list(start), waypoints))]
 
-    for coord in range(len(smoothed_path[:-1])):
-        draw.line([smoothed_path[coord], smoothed_path[coord + 1]], fill=green, width=2)
+        for coord in range(len(smoothed_path[:-1])):
+            draw.line([smoothed_path[coord], smoothed_path[coord + 1]], fill=green, width=2)
 
     box = (start[0] - 3, start[1] - 3, start[0] + 3, start[1] + 3)
     draw.ellipse(box, outline="red", width=3)
@@ -197,20 +201,21 @@ def render_dict_path(grid: Grid, path, edges, output_path: str):
             if grid[x][y] == 4:
                 end = (x, y)
 
-    for start_node, end_node in edges:
-        draw.line([start_node, end_node], fill=purple, width=2)  # Change fill and width as needed
+    if render_lines:
+        for start_node, end_node in edges:
+            draw.line([start_node, end_node], fill=purple, width=2)  # Change fill and width as needed
 
-    waypoints = []
+        waypoints = []
 
-    for current, parent_node in path:
-        draw.line([current, parent_node], fill=(255, 0, 0, 255), width=2)
-        waypoints.append(list(current))
+        for current, parent_node in path:
+            draw.line([current, parent_node], fill=(255, 0, 0, 255), width=2)
+            waypoints.append(list(current))
 
-    smoothed_path = [(round(x[0]), round(x[1])) for x in convert_to_coordinates(smooth_path(list(
-        end), list(start), waypoints))]
+        smoothed_path = [(round(x[0]), round(x[1])) for x in convert_to_coordinates(smooth_path(list(
+            end), list(start), waypoints))]
 
-    for coord in range(len(smoothed_path) - 1):
-        draw.line([smoothed_path[coord], smoothed_path[coord + 1]], fill=green, width=2)
+        for coord in range(len(smoothed_path) - 1):
+            draw.line([smoothed_path[coord], smoothed_path[coord + 1]], fill=green, width=2)
 
     box = (start[0] - 3, start[1] - 3, start[0] + 3, start[1] + 3)
     draw.ellipse(box, outline="red", width=3)
