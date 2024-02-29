@@ -1,3 +1,4 @@
+import math
 import random
 import time
 
@@ -69,7 +70,33 @@ def initial_spawn_nodes(grid: Grid, start: Node, dist: int) -> NodeList:
     return valid_nodes
 
 
-def rrt_sid(grid: Grid, num_iters: int, start: Node, end: Node, dist: int, screen: pygame.Surface, out: str):
+def check_angle(prev_node: Node, node: Node, next_node: Node) -> bool:
+    """
+    Check if the angle between 2 lines is within the maximum turning angle of the vehicle.
+    """
+
+    vec_1 = (node[0] - prev_node[0], node[1] - prev_node[1])
+    vec_2 = (next_node[0] - node[0], next_node[1] - node[1])
+
+    dot_product = sum(x * y for x, y in zip(vec_1, vec_2))
+    magnitude_product = math.sqrt(sum(x ** 2 for x in vec_1)) * math.sqrt(sum(x ** 2 for x in vec_2))
+
+    if magnitude_product == 0 or dot_product == 0:
+        return False
+
+    try:
+        angle = abs(math.acos(dot_product / magnitude_product))
+    except:
+        return False
+
+    if angle > config.max_turning_angle:
+        return False
+
+    return True
+
+
+def rrt_sid(grid: Grid, num_iters: int, start: Node, end: Node, dist: int, screen: pygame.Surface,
+            out: str):
     """
     Custom version of Rapidly Exploring Random Tree (RRT) which continuously optimizes the node
     tree to minimize distance from the start node.
@@ -121,6 +148,7 @@ def rrt_sid(grid: Grid, num_iters: int, start: Node, end: Node, dist: int, scree
         for root in edges:
             sub_dist = euclidean_distance(root, valid_node) + min_distance[root]
             if sub_dist < best_dist \
+                    and check_angle(edges[root], root, valid_node) \
                     and not line_cross_check(grid, root, valid_node):
                 best = root
                 best_dist = sub_dist
@@ -146,6 +174,7 @@ def rrt_sid(grid: Grid, num_iters: int, start: Node, end: Node, dist: int, scree
     for root in edges:
         sub_dist = euclidean_distance(root, end) + min_distance[root]
         if sub_dist < best_dist \
+                and check_angle(edges[root], root, end) \
                 and not line_cross_check(grid, root, end):
             best = root
             best_dist = sub_dist
@@ -161,7 +190,8 @@ def rrt_sid(grid: Grid, num_iters: int, start: Node, end: Node, dist: int, scree
     return extract_path_from_dict(edges, start, end)
 
 
-def rrt_star(grid: Grid, num_iters: int, start: Node, end: Node, dist: int, screen=None, out: str = ""):
+def rrt_star(grid: Grid, num_iters: int, start: Node, end: Node, dist: int, screen=None,
+             out: str = ""):
     grid[start[0]][start[1]] = 3
     grid[end[0]][end[1]] = 4
 
@@ -177,7 +207,8 @@ def rrt_star(grid: Grid, num_iters: int, start: Node, end: Node, dist: int, scre
         nearest_node, nearest_node_cost = nearest_neighbor(valid_node, nodes, cost)
 
         new_node = steer(nearest_node, valid_node, dist)
-        if new_node is not None and not (check_collision(grid, new_node) or line_cross_check(grid, nearest_node, new_node)):
+        if new_node is not None and not (
+                check_collision(grid, new_node) or line_cross_check(grid, nearest_node, new_node)):
             near_nodes = near_neighbors(new_node, nodes, max_dist=dist)
             min_cost_node = nearest_node
             min_cost = nearest_node_cost + euclidean_distance(nearest_node, new_node)
@@ -195,7 +226,8 @@ def rrt_star(grid: Grid, num_iters: int, start: Node, end: Node, dist: int, scre
             # Rewiring step
             for near_node in near_nodes:
                 potential_cost = cost[new_node] + euclidean_distance(new_node, near_node)
-                if potential_cost < cost[near_node] and not line_cross_check(grid, new_node, near_node):
+                if potential_cost < cost[near_node] and not line_cross_check(grid, new_node,
+                                                                             near_node):
                     nodes[near_node] = new_node
                     edges_as_list.append((new_node, near_node))
                     cost[near_node] = potential_cost

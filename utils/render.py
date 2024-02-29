@@ -248,3 +248,15 @@ def render_local_path_on_image(path, input_image, output_image):
         draw.line([start, end], fill=green, width=4)
 
     img.save(output_image)
+
+
+def render_circle_on_image(obstacle, path):
+    img = Image.open(path)
+    draw = ImageDraw.Draw(img)
+
+    box = (obstacle.x - obstacle.radius, obstacle.y - obstacle.radius, obstacle.x +
+        obstacle.radius, obstacle.y + obstacle.radius)
+
+    draw.ellipse(box, blue, blue)
+
+    img.save(path)

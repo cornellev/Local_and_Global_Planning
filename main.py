@@ -6,7 +6,7 @@ from local_sim.obstacle import Obstacle
 from local_sim.path import LocalPlanner
 from global_sim.algorithm import rrt_sid, rrt_star
 from type_hints.types import Grid
-from utils.render import image_to_grid, render_local_path_on_image
+from utils.render import image_to_grid, render_local_path_on_image, render_circle_on_image
 import config
 
 start_time = time.time()
@@ -14,9 +14,9 @@ start_time = time.time()
 grid: Grid = image_to_grid(config.map_path, reverse_colors=config.map_bw_reverse)
 
 screen = None
-if config.debug:
-    pygame.init()
-    screen = pygame.display.set_mode((len(grid[0]), len(grid)))
+# if config.debug:
+pygame.init()
+screen = pygame.display.set_mode((len(grid[0]), len(grid)))
 
 algo_options = {
     "rrt_sid": rrt_sid,
@@ -44,7 +44,12 @@ render_local_path_on_image([], config.out_path, 'test.png')
 total_dist = ((target_waypoint[0] - current_position[0]) ** 2
               + (target_waypoint[1] - current_position[1]) ** 2)
 
-obstacles = []
+obstacles = [Obstacle(100, 20, 10), Obstacle(200, 30, 15)]
+# obstacles = []
+
+for obstacle in obstacles:
+    render_circle_on_image(obstacle, 'test.png')
+
 search_radius = 10
 
 # Search in area near waypoints for obstacles
@@ -54,8 +59,17 @@ for i in range(-search_radius, search_radius, 3):
             if grid[current_position[0] + i][current_position[1] + j] == 1:
                 obstacles.append(Obstacle(current_position[0] + i, current_position[1] + j, .5))
 
+
+def check_if_path_through_waypoint(path, waypoint, radius):
+    for pos in path:
+        if (pos[0] - waypoint[0]) ** 2 + (pos[1] - waypoint[1]) ** 2 <= radius ** 2:
+            return True
+    else:
+        return False
+
+
 while (current_position[0], current_position[1]) != (global_path[-1][0], global_path[-1][1]):
-    local_planner = LocalPlanner(.05, .25)
+    local_planner = LocalPlanner(.01, 1)
 
     solution, state, u = local_planner.find_path(current_position, target_waypoint, total_dist, obstacles)
     path = local_planner.get_path_coords(solution, state)
@@ -67,9 +81,7 @@ while (current_position[0], current_position[1]) != (global_path[-1][0], global_
             (global_path[-1][0], global_path[-1][1])) else 5
 
     if (
-            (current_position[0] - target_waypoint[0]) ** 2
-            + (current_position[1] - target_waypoint[1]) ** 2
-            < threshold ** 2
+            check_if_path_through_waypoint(path, target_waypoint, threshold)
     ):
         if global_path.index(target_waypoint) + 1 < len(global_path):
             target_waypoint = global_path[global_path.index(target_waypoint) + 1]
@@ -80,9 +92,9 @@ while (current_position[0], current_position[1]) != (global_path[-1][0], global_
                                                                          current_position[1])) ** 2
 
     render_local_path_on_image(path, 'test.png', 'test.png')
-    if config.debug:
-        imp = pygame.image.load('test.png').convert()
-        screen.blit(imp, (0, 0))
-        pygame.display.flip()
+    # if config.debug:
+    imp = pygame.image.load('test.png').convert()
+    screen.blit(imp, (0, 0))
+    pygame.display.flip()
 
 input("COMPLETE: %s seconds" % (time.time() - start_time))
