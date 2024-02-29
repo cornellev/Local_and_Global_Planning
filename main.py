@@ -6,7 +6,8 @@ from local_sim.obstacle import Obstacle
 from local_sim.path import LocalPlanner
 from global_sim.algorithm import rrt_sid, rrt_star
 from type_hints.types import Grid
-from utils.render import image_to_grid, render_local_path_on_image, render_circle_on_image
+from utils.render import image_to_grid, render_local_path_on_image, render_circle_on_image, \
+    clean_padding
 import config
 
 start_time = time.time()
@@ -14,9 +15,9 @@ start_time = time.time()
 grid: Grid = image_to_grid(config.map_path, reverse_colors=config.map_bw_reverse)
 
 screen = None
-# if config.debug:
-pygame.init()
-screen = pygame.display.set_mode((len(grid[0]), len(grid)))
+if config.debug_global or config.debug_local:
+    pygame.init()
+    screen = pygame.display.set_mode((len(grid[0]), len(grid)))
 
 algo_options = {
     "rrt_sid": rrt_sid,
@@ -39,7 +40,7 @@ for i in range(len(global_path)):
 current_position = global_path[0]
 target_waypoint = global_path[1]
 
-render_local_path_on_image([], config.out_path, 'test.png')
+clean_padding(grid, config.out_path, 'test.png')
 
 total_dist = ((target_waypoint[0] - current_position[0]) ** 2
               + (target_waypoint[1] - current_position[1]) ** 2)
@@ -63,6 +64,7 @@ for i in range(-search_radius, search_radius, 3):
 def check_if_path_through_waypoint(path, waypoint, radius):
     for pos in path:
         if (pos[0] - waypoint[0]) ** 2 + (pos[1] - waypoint[1]) ** 2 <= radius ** 2:
+            print("Path through waypoint: ", waypoint, " at position: ", pos)
             return True
     else:
         return False
@@ -92,9 +94,9 @@ while (current_position[0], current_position[1]) != (global_path[-1][0], global_
                                                                          current_position[1])) ** 2
 
     render_local_path_on_image(path, 'test.png', 'test.png')
-    # if config.debug:
-    imp = pygame.image.load('test.png').convert()
-    screen.blit(imp, (0, 0))
-    pygame.display.flip()
+    if config.debug_local:
+        imp = pygame.image.load('test.png').convert()
+        screen.blit(imp, (0, 0))
+        pygame.display.flip()
 
 input("COMPLETE: %s seconds" % (time.time() - start_time))

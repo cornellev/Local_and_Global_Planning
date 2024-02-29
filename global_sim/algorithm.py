@@ -70,31 +70,6 @@ def initial_spawn_nodes(grid: Grid, start: Node, dist: int) -> NodeList:
     return valid_nodes
 
 
-def check_angle(prev_node: Node, node: Node, next_node: Node) -> bool:
-    """
-    Check if the angle between 2 lines is within the maximum turning angle of the vehicle.
-    """
-
-    vec_1 = (node[0] - prev_node[0], node[1] - prev_node[1])
-    vec_2 = (next_node[0] - node[0], next_node[1] - node[1])
-
-    dot_product = sum(x * y for x, y in zip(vec_1, vec_2))
-    magnitude_product = math.sqrt(sum(x ** 2 for x in vec_1)) * math.sqrt(sum(x ** 2 for x in vec_2))
-
-    if magnitude_product == 0 or dot_product == 0:
-        return False
-
-    try:
-        angle = abs(math.acos(dot_product / magnitude_product))
-    except:
-        return False
-
-    if angle > config.max_turning_angle:
-        return False
-
-    return True
-
-
 def rrt_sid(grid: Grid, num_iters: int, start: Node, end: Node, dist: int, screen: pygame.Surface,
             out: str):
     """
@@ -158,7 +133,7 @@ def rrt_sid(grid: Grid, num_iters: int, start: Node, end: Node, dist: int, scree
             min_distance[valid_node] = best_dist
             edges_as_list.append((best, valid_node))
 
-        if config.debug and i % config.debug_iters == 0:
+        if config.debug_global and i % config.debug_iters == 0:
             print(i)
             grid_to_image(grid, edges_as_list, out)
             imp = pygame.image.load(out).convert()
@@ -178,6 +153,15 @@ def rrt_sid(grid: Grid, num_iters: int, start: Node, end: Node, dist: int, scree
                 and not line_cross_check(grid, root, end):
             best = root
             best_dist = sub_dist
+
+    if best is None:
+        print("FORCED TO CONSTRUCT IMPOSSIBLE PATH AT END")
+        for root in edges:
+            sub_dist = euclidean_distance(root, end) + min_distance[root]
+            if sub_dist < best_dist \
+                    and not line_cross_check(grid, root, end):
+                best = root
+                best_dist = sub_dist
 
     if best is None:
         print("CRITICAL ERROR, could not reach end node.")
@@ -232,7 +216,7 @@ def rrt_star(grid: Grid, num_iters: int, start: Node, end: Node, dist: int, scre
                     edges_as_list.append((new_node, near_node))
                     cost[near_node] = potential_cost
 
-            if config.debug and i % config.debug_iters == 0:  # Visualization (optional)
+            if config.debug_global and i % config.debug_iters == 0:  # Visualization (optional)
                 print(i)
                 grid_to_image(grid, edges_as_list, out)
                 imp = pygame.image.load(out).convert()

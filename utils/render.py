@@ -100,7 +100,8 @@ def grid_to_image(grid: Grid, edges: Edges, output_path: str):
 
     if render_lines:
         for start_node, end_node in edges:
-            draw.line([start_node, end_node], fill=purple, width=2)  # Change fill and width as needed
+            draw.line([start_node, end_node], fill=purple,
+                      width=2)  # Change fill and width as needed
 
     box = (start[0] - 3, start[1] - 3, start[0] + 3, start[1] + 3)
     draw.ellipse(box, outline="red", width=3)
@@ -145,7 +146,8 @@ def render_path(grid: Grid, path: Path, edges: Edges, output_path: str):
 
     if render_lines:
         for start_node, end_node in edges:
-            draw.line([start_node, end_node], fill=purple, width=2)  # Change fill and width as needed
+            draw.line([start_node, end_node], fill=purple,
+                      width=2)  # Change fill and width as needed
 
         waypoints = []
 
@@ -155,8 +157,9 @@ def render_path(grid: Grid, path: Path, edges: Edges, output_path: str):
             current = path[current]
             waypoints.append(list(current))
 
-        smoothed_path = [(round(x[0]), round(x[1])) for x in convert_to_coordinates(smooth_path(list(
-            end), list(start), waypoints))]
+        smoothed_path = [(round(x[0]), round(x[1])) for x in
+                         convert_to_coordinates(smooth_path(list(
+                             end), list(start), waypoints))]
 
         for coord in range(len(smoothed_path[:-1])):
             draw.line([smoothed_path[coord], smoothed_path[coord + 1]], fill=blue, width=2)
@@ -203,7 +206,8 @@ def render_dict_path(grid: Grid, path, edges, output_path: str):
 
     if render_lines:
         for start_node, end_node in edges:
-            draw.line([start_node, end_node], fill=purple, width=2)  # Change fill and width as needed
+            draw.line([start_node, end_node], fill=purple,
+                      width=2)  # Change fill and width as needed
 
         waypoints = []
 
@@ -211,8 +215,9 @@ def render_dict_path(grid: Grid, path, edges, output_path: str):
             draw.line([current, parent_node], fill=(255, 0, 0, 255), width=2)
             waypoints.append(list(current))
 
-        smoothed_path = [(round(x[0]), round(x[1])) for x in convert_to_coordinates(smooth_path(list(
-            end), list(start), waypoints))]
+        smoothed_path = [(round(x[0]), round(x[1])) for x in
+                         convert_to_coordinates(smooth_path(list(
+                             end), list(start), waypoints))]
 
         for coord in range(len(smoothed_path) - 1):
             draw.line([smoothed_path[coord], smoothed_path[coord + 1]], fill=blue, width=1)
@@ -223,6 +228,21 @@ def render_dict_path(grid: Grid, path, edges, output_path: str):
     draw.ellipse(box, outline="green", width=5)
 
     new_img.save(output_path)
+
+
+def clean_padding(grid: Grid, input_image, output_image):
+    """
+    Cleans the padding in the input image and saves the output image.
+    """
+
+    img = Image.open(input_image)
+
+    for x in range(len(grid)):
+        for y in range(len(grid[0])):
+            if grid[x][y] == 2:
+                img.putpixel((y, x), black)
+
+    img.save(output_image)
 
 
 def render_local_path_on_image(path, input_image, output_image):
@@ -243,9 +263,9 @@ def render_local_path_on_image(path, input_image, output_image):
 
     for i in range(len(path) - 1):
         start = path[i][0], path[i][1]
-        end = path[i+1][0], path[i+1][1]
+        end = path[i + 1][0], path[i + 1][1]
 
-        draw.line([start, end], fill=green, width=4)
+        draw.line([start, end], fill=green, width=int(config.vehicle_width))
 
     img.save(output_image)
 
@@ -255,7 +275,7 @@ def render_circle_on_image(obstacle, path):
     draw = ImageDraw.Draw(img)
 
     box = (obstacle.x - obstacle.radius, obstacle.y - obstacle.radius, obstacle.x +
-        obstacle.radius, obstacle.y + obstacle.radius)
+           obstacle.radius, obstacle.y + obstacle.radius)
 
     draw.ellipse(box, blue, blue)
 

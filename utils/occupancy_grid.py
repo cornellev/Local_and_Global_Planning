@@ -1,5 +1,6 @@
 import math
 
+import config
 from type_hints.types import *
 
 
@@ -121,3 +122,28 @@ def find_nearest_node(grid: Grid, node_list: NodeList, node: Node) -> Node or No
             best_dist = dist
 
     return best
+
+
+def check_angle(prev_node: Node, node: Node, next_node: Node) -> bool:
+    """
+    Check if the angle between 2 vectors is within the maximum turning angle of the vehicle.
+    """
+
+    vec_1 = (node[0] - prev_node[0], node[1] - prev_node[1])
+    vec_2 = (next_node[0] - node[0], next_node[1] - node[1])
+
+    dot_product = sum(x * y for x, y in zip(vec_1, vec_2))
+    magnitude_product = math.sqrt(sum(x ** 2 for x in vec_1)) * math.sqrt(sum(x ** 2 for x in vec_2))
+
+    if magnitude_product == 0 or dot_product == 0:
+        return False
+
+    try:
+        angle = abs(math.acos(dot_product / magnitude_product))
+    except:
+        return False
+
+    if angle > config.max_turning_angle:
+        return False
+
+    return True
