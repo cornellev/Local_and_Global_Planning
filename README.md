@@ -1,10 +1,10 @@
-Current Plan
+# spring-path
 
-    Test RRT+A*, RRT*, Informed RRT*, etc. in f1Tenth
+Ethan tries to make a local planning algorithm that accounts for dynamic obstacles but likely fails miserably.
 
-git@github.com:ai-winter/ros_motion_planning.git
+## Building
 
-Person 1 - Get occupancy grid from gazebo Person 2 - Implement algos on occupancy grid, output coordinate path Person 3 - Take coordinate path, link up with rviz
-
-##### Global Sim
-To run global sim, run `python main.py` from inside the global_sim directory. Edit config.py to change which algorithms to use and settings.
+Assuming you have [SDL](https://www.libsdl.org) installed, you can run
+```
+make && ./main
+```
