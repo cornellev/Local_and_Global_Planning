@@ -97,7 +97,6 @@ def check_collision(grid: Grid, node: Node) -> bool:
             or node[1] > len(grid[0]) - 1
             or grid[node[0]][node[1]] == 1
             or grid[node[0]][node[1]] == 2
-
     )
 
 

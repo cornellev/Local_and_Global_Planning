@@ -2,6 +2,7 @@ import time
 
 import pygame
 
+import utils.occupancy_grid
 from local_sim.obstacle import Obstacle
 from local_sim.path import LocalPlanner
 from global_sim.algorithm import rrt_sid, rrt_star
@@ -34,6 +35,11 @@ global_path = algo_options[config.algo](
     config.out_path
 )
 
+print(global_path)
+
+print([x[:2] for x in utils.occupancy_grid.waypoints_gen(global_path, 25)])
+
+
 for i in range(len(global_path)):
     global_path[i] = (global_path[i][0], global_path[i][1], 0, 0)
 
@@ -45,10 +51,10 @@ clean_padding(grid, config.out_path, 'test.png')
 total_dist = ((target_waypoint[0] - current_position[0]) ** 2
               + (target_waypoint[1] - current_position[1]) ** 2)
 
-obstacles = [Obstacle(100, 20, 10), Obstacle(200, 30, 15)]
-# obstacles = []
+dynamic_obstacles = [Obstacle(100, 20, 10), Obstacle(200, 30, 15)]
+obstacles = []
 
-for obstacle in obstacles:
+for obstacle in dynamic_obstacles:
     render_circle_on_image(obstacle, 'test.png')
 
 search_radius = 10
@@ -73,8 +79,9 @@ def check_if_path_through_waypoint(path, waypoint, radius):
 while (current_position[0], current_position[1]) != (global_path[-1][0], global_path[-1][1]):
     local_planner = LocalPlanner(.01, 1)
 
-    solution, state, u = local_planner.find_path(current_position, target_waypoint, total_dist, obstacles)
-    path = local_planner.get_path_coords(solution, state)
+    solution, state, u = local_planner.find_path(current_position, target_waypoint, total_dist,
+                                                 obstacles, dynamic_obstacles)
+    path = local_planner.get_path_coords(solution, state)[:10]
     current_position = path[-1]
 
     # 25 threshold if not the last waypoint, 10 if it is

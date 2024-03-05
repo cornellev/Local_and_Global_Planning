@@ -11,7 +11,7 @@ class LocalPlanner:
         self.T = T
         self.N = int(T / dT)
 
-    def find_path(self, current_state, end_state, total_dist, obstacles):
+    def find_path(self, current_state, end_state, total_dist, obstacles, dynamic_obstacles):
         # Decision variables
         state = self.optimizer.variable(4, self.N)
         u = self.optimizer.variable(2, self.N - 1)
@@ -29,9 +29,12 @@ class LocalPlanner:
             cost += dist_ratio * state[2, i] ** 2
             cost += dist_ratio * state[3, i] ** 2
 
-        for i in range(self.N - 1):
-            cost += u[0, i] ** 2
-            cost += u[1, i] ** 2
+        # for i in range(self.N - 1):
+        #     cost += u[0, i] ** 2
+        #     cost += u[1, i] ** 2
+
+        for obstacle in dynamic_obstacles:
+            cost += 1 / ((state[0, 0] - obstacle.x) ** 2 + (state[1, 0] - obstacle.y) ** 2)
 
         self.optimizer.minimize(cost)
 
