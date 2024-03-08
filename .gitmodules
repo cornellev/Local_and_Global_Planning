@@ -1,3 +1,9 @@
 [submodule "ros/catkin_ws/src/rviz_car_model"]
 	path = ros/catkin_ws/src/rviz_car_model
 	url = https://github.com/AutoLidarPerception/rviz_car_model
+[submodule "ros/catkin_ws/src/teb_local_planner_tutorials"]
+	path = ros/catkin_ws/src/teb_local_planner_tutorials
+	url = git@github.com:rst-tu-dortmund/teb_local_planner_tutorials.git
+[submodule "ros/catkin_ws/src/f1tenth_simulator"]
+	path = ros/catkin_ws/src/f1tenth_simulator
+	url = https://github.com/f1tenth/f1tenth_simulator.git
