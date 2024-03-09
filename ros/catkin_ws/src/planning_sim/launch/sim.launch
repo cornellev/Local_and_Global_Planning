@@ -1,12 +1,45 @@
 <launch>
-    <node pkg="planning_sim" type="occupancy_grid_publish.py" name="occupancy_grid" output="screen"/>
-    
-    <!-- Load rviz_car_model before rviz -->
-    <include file="$(find rviz_car_model)/launch/default.launch">
-        <arg name="fixed_frame" value="base_link"/>
-        <!-- x y z qx qy qz qw -->
-        <arg name="transform" value="0 0 -0.98 0 0 0 1"/>
-    </include>
+    <!-- <node pkg="planning_sim" type="occupancy_grid_publish.py" name="occupancy_grid" output="screen"/> -->
+    <!-- <node name="rviz" pkg="rviz" type="rviz" args="-d $(find planning_sim)/rviz_conf/conf.rviz"/> -->
 
-    <node name="rviz" pkg="rviz" type="rviz" args="-d $(find planning_sim)/rviz_conf/conf.rviz"/>
+    <!--- Run optimization test node -->
+   	<node pkg="teb_local_planner" type="test_optim_node" name="test_optim_node" output="screen" />
+
+    <!-- RVIZ STUFF -->
+    <!-- Listen to messages from joysicks -->
+    <node pkg="joy" name="joy_node" type="joy_node"/>
+
+    <!-- Launch a map from the maps folder-->
+    <arg name="map" default="$(find f1tenth_simulator)/maps/levine.yaml"/>
+    <node pkg="map_server" name="map_server" type="map_server" args="$(arg map)"/>
+
+    <!-- Launch the racecar model -->
+    <include file="$(find f1tenth_simulator)/launch/racecar_model.launch"/>
+
+    <!-- Begin the simulator with the parameters from params.yaml -->
+    <node pkg="f1tenth_simulator" name="f1tenth_simulator" type="simulator" output="screen">
+        <rosparam command="load" file="$(find f1tenth_simulator)/params.yaml"/>
+    </node>
+
+    <!-- Launch the mux node with the parameters from params.yaml -->
+    <node pkg="f1tenth_simulator" name="mux_controller" type="mux" output="screen">
+        <rosparam command="load" file="$(find f1tenth_simulator)/params.yaml"/>
+    </node>
+
+    <!-- Launch the behavior controller node with the parameters from params.yaml -->
+    <node pkg="f1tenth_simulator" name="behavior_controller" type="behavior_controller" output="screen">
+        <rosparam command="load" file="$(find f1tenth_simulator)/params.yaml"/>
+    </node>
+
+    <!-- ***Put launch command for new planner here:-->
+    <!-- Launch the New Planner Node -->
+    <!--   <node pkg="f1tenth_simulator" name="new node's name" type="new file name" output="screen">
+            <rosparam command="load" file="$(find f1tenth_simulator)/params.yaml"/>
+        </node>    -->
+
+    
+    <!-- Launch RVIZ -->
+    <node pkg="rviz" type="rviz" name="rviz" args="-d $(find planning_sim)/rviz_conf/conf.rviz" output="screen"/>
+
+
 </launch>

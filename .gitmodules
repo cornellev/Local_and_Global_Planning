@@ -7,3 +7,6 @@
 [submodule "ros/catkin_ws/src/f1tenth_simulator"]
 	path = ros/catkin_ws/src/f1tenth_simulator
 	url = https://github.com/f1tenth/f1tenth_simulator.git
+[submodule "ros/catkin_ws/src/teb_local_planner"]
+	path = ros/catkin_ws/src/teb_local_planner
+	url = https://github.com/rst-tu-dortmund/teb_local_planner.git
