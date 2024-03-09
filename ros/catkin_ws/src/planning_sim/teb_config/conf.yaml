@@ -1,0 +1,72 @@
+TebLocalPlannerROS:
+  odom_topic: "odom"
+  map_frame: "map"
+  robot_base_frame: "base_link"
+
+  # Trajectory related parameters
+  teb_autosize: true
+  dt_ref: 0.3
+  dt_hysteresis: 0.1
+  min_samples: 3
+  global_plan_overwrite_orientation: true
+  allow_init_with_backwards_motion: true
+
+  # Robot related parameters
+  max_vel_x: 0.5
+  max_vel_theta: 0.3
+  acc_lim_x: 0.5
+  acc_lim_theta: 0.5
+  min_turning_radius: 0.2
+
+  # Goal tolerance and relaxation
+  xy_goal_tolerance: 0.2
+  yaw_goal_tolerance: 0.2
+  free_goal_vel: false
+
+  # Obstacle related parameters
+  min_obstacle_dist: 0.5
+  inflation_dist: 0.5
+  dynamic_obstacle_inflation_dist: 0.5
+  include_dynamic_obstacles: true
+  include_costmap_obstacles: true
+
+  # Optimization related parameters
+  optimization_activate: true
+  optimization_verbose: false
+  penalty_epsilon: 0.1
+  weight_obstacle: 50
+  weight_inflation: 0.1
+  weight_dynamic_obstacle: 50
+  weight_velocity: 10
+  weight_kinematics_nh: 1000
+  weight_kinematics_forward_drive: 0
+  weight_optimaltime: 1
+  weight_shortest_path: 0
+
+  # Visualization
+  publish_feedback: true
+  visualize_hc_graph: false
+  visualize_with_time_as_z_axis_scale: 0.0
+  visualize_with_time_as_z_axis_offset: 0.0
+  visualize_trajectory_mode: "publish_obstacles_and_feedback"
+  visualize_trajectory_global: false
+  visualize_trajectory_local: false
+  visualize_subgoals: true
+  visualize_alternative_time_cost: false
+  publish_robot_global_plan: true
+  publish_robot_local_plan: true
+
+  # Homotopy Class Planner
+  enable_homotopy_class_planning: true
+  enable_multithreading: true
+  simple_exploration: false
+  max_number_classes: 5
+  selection_cost_hysteresis: 1.0
+  selection_prefer_initial_plan: 0.95
+  selection_obst_cost_scale: 100.0
+  selection_viapoint_cost_scale: 1.0
+  selection_alternative_time_cost: false
+  roadmap_graph_no_samples: 15
+  roadmap_graph_area_width: 6
+  h_signature_prescaler: 0.5
+  h_signature_threshold: 0.1

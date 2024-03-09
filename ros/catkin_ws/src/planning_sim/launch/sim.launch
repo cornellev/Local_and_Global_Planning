@@ -3,7 +3,9 @@
     <!-- <node name="rviz" pkg="rviz" type="rviz" args="-d $(find planning_sim)/rviz_conf/conf.rviz"/> -->
 
     <!--- Run optimization test node -->
-   	<node pkg="teb_local_planner" type="test_optim_node" name="test_optim_node" output="screen" />
+   	<node pkg="teb_local_planner" type="test_optim_node" name="test_optim_node" output="screen">
+        <rosparam command="load" file="$(find planning_sim)/teb_config/conf.yaml" />
+    </node>
 
     <!-- RVIZ STUFF -->
     <!-- Listen to messages from joysicks -->
