@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<?xml-model href="http://download.ros.org/schema/package_format2.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
+<package format="2">
+    <name>rrt_planner</name>
+    <version>1.17.3</version>
+    <description>
+
+        A RRT based global planner.
+
+    </description>
+    <author>Sidharth Rao</author>
+    <maintainer email="smr353@cornell.edu">Sidharth Rao</maintainer>
+    <license>BSD</license>
+    <url>http://wiki.ros.org/rrt_planner</url>
+
+    <buildtool_depend>catkin</buildtool_depend>
+
+    <build_depend>tf2_geometry_msgs</build_depend>
+
+    <depend>angles</depend>
+    <depend>base_local_planner</depend>
+    <depend>costmap_2d</depend>
+    <depend>nav_core</depend>
+    <depend>pluginlib</depend>
+    <depend>roscpp</depend>
+    <depend>tf2</depend>
+    <depend>tf2_ros</depend>
+
+    <export>
+        <nav_core plugin="${prefix}/bgp_plugin.xml" />
+    </export>
+</package>
+
