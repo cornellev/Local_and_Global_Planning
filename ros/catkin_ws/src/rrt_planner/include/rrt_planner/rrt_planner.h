@@ -17,6 +17,13 @@ namespace rrt_planner {
   class RRTPlanner : public nav_core::BaseGlobalPlanner {
     public:
 
+      costmap_2d::Costmap2DROS* costmap_ros;
+      costmap_2d::Costmap2D* costmap;
+      int size_x;
+      int size_y;
+
+      float threshold;
+
       RRTPlanner();
       RRTPlanner(std::string name, costmap_2d::Costmap2DROS* costmap_ros);
 
@@ -24,6 +31,10 @@ namespace rrt_planner {
         std::string name, 
         costmap_2d::Costmap2DROS* costmap_ros
       );
+
+      void algorithm();
+
+      bool checkObstacle(double x, double y);
 
       bool makePlan(
         const geometry_msgs::PoseStamped& start,
